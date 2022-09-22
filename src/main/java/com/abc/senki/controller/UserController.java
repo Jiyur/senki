@@ -7,6 +7,7 @@ import com.abc.senki.model.payload.request.UserRequest.ChangeUserInfoRequest;
 import com.abc.senki.model.payload.request.UserRequest.ForgetPasswordRequest;
 import com.abc.senki.model.payload.response.ErrorResponse;
 import com.abc.senki.model.payload.response.SuccessResponse;
+import com.abc.senki.service.ImageStorageService;
 import com.abc.senki.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -17,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -35,6 +37,8 @@ public class UserController {
     private UserService userService;
     @Autowired
     AuthenticationHandler authenticationHandler;
+    @Autowired
+    ImageStorageService imageStorageService;
 
 
     @GetMapping("profile")
@@ -115,5 +119,36 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(ErrorResponse.error(e.getMessage(), HttpStatus.UNAUTHORIZED.value()));
         }
+    }
+    @PostMapping("profile/uploadAvatar")
+    @Operation(summary = "Upload avatar")
+    public ResponseEntity<Object> uploadAvatar(HttpServletRequest request,@RequestPart MultipartFile file) {
+       try{
+           UserEntity userEntity = authenticationHandler.userAuthenticate(request);
+           if(userEntity==null){
+               throw new BadCredentialsException("User not found !");
+           }
+           if(!imageStorageService.isImageFile(file)){
+               return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
+                       .body(ErrorResponse.error("File is not image", HttpStatus.UNPROCESSABLE_ENTITY.value()));
+           }
+           String url=imageStorageService.saveAvatar(file,userEntity.getEmail());
+           if(url.equals("")){
+               return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
+                       .body(ErrorResponse.error("Upload avatar failed", HttpStatus.UNPROCESSABLE_ENTITY.value()));
+           }
+           else{
+                userEntity.setImg(url);
+                userService.saveInfo(userEntity);
+                HashMap<String,Object> data=new HashMap<>();
+                data.put("img_url",url);
+                return ResponseEntity.ok(new SuccessResponse(HttpStatus.OK.value(),"Upload avatar successfully",data));
+           }
+       }
+       catch (Exception e){
+              return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                     .body(ErrorResponse.error(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
+       }
+
     }
 }
