@@ -17,7 +17,8 @@ import java.util.UUID;
 @Transactional
 @RequiredArgsConstructor
 public class ImageStorageServiceImpl implements ImageStorageService {
-
+    private static final String RESOURCE_TYPE = "resource_type";
+    private static final String UPLOAD_PRESET = "upload_preset";
     @Override
     public boolean isImageFile(MultipartFile file) {
         return Arrays.asList(new String[] {"image/png","image/jpg","image/jpeg", "image/bmp"})
@@ -36,7 +37,7 @@ public class ImageStorageServiceImpl implements ImageStorageService {
     public String saveAvatar(MultipartFile file, String fileName){
         Map r;
         try {
-            r = this.cloudinary().uploader().upload(file.getBytes(), ObjectUtils.asMap("resource_type","auto","upload_preset","img_avatar","public_id","tiki_avatar/"+fileName));
+            r = this.cloudinary().uploader().upload(file.getBytes(), ObjectUtils.asMap(RESOURCE_TYPE,"auto",UPLOAD_PRESET,"senki_avatar","public_id","tiki_avatar/"+fileName));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -46,7 +47,7 @@ public class ImageStorageServiceImpl implements ImageStorageService {
     public String saveLogo(MultipartFile file, String fileName){
         Map r;
         try {
-            r = this.cloudinary().uploader().upload(file.getBytes(), ObjectUtils.asMap("resource_type","auto","upload_preset","img_avatar","public_id","tiki_logo/"+fileName));
+            r = this.cloudinary().uploader().upload(file.getBytes(), ObjectUtils.asMap(RESOURCE_TYPE,"auto",UPLOAD_PRESET,"img_avatar","public_id","tiki_logo/"+fileName));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -57,7 +58,7 @@ public class ImageStorageServiceImpl implements ImageStorageService {
     public String saveProductImg(MultipartFile file, String fileName){
         Map r;
         try {
-            r = this.cloudinary().uploader().upload(file.getBytes(), ObjectUtils.asMap("resource_type","auto","upload_preset","img_product","public_id","tiki_product/"+fileName));
+            r = this.cloudinary().uploader().upload(file.getBytes(), ObjectUtils.asMap(RESOURCE_TYPE,"auto",UPLOAD_PRESET,"img_product","public_id","tiki_product/"+fileName));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -67,7 +68,7 @@ public class ImageStorageServiceImpl implements ImageStorageService {
     public String saveImgProduct(MultipartFile file, String fileName){
         Map r;
         try {
-            r = this.cloudinary().uploader().upload(file.getBytes(), ObjectUtils.asMap("resource_type","auto","upload_preset","img_product","public_id","tiki_product/"+fileName));
+            r = this.cloudinary().uploader().upload(file.getBytes(), ObjectUtils.asMap(RESOURCE_TYPE,"auto",UPLOAD_PRESET,"img_product","public_id","tiki_product/"+fileName));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -88,7 +89,7 @@ public class ImageStorageServiceImpl implements ImageStorageService {
     public String saveProductRatingImg(MultipartFile file, String fileName) {
         Map r;
         try {
-            r = this.cloudinary().uploader().upload(file.getBytes(), ObjectUtils.asMap("resource_type","auto","upload_preset","img_avatar","public_id","tiki_product_rating/"+fileName));
+            r = this.cloudinary().uploader().upload(file.getBytes(), ObjectUtils.asMap(RESOURCE_TYPE,"auto",UPLOAD_PRESET,"img_avatar","public_id","tiki_product_rating/"+fileName));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

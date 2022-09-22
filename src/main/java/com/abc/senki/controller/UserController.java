@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -120,9 +121,9 @@ public class UserController {
                     .body(ErrorResponse.error(e.getMessage(), HttpStatus.UNAUTHORIZED.value()));
         }
     }
-    @PostMapping("profile/uploadAvatar")
+    @PostMapping(value = "profile/uploadAvatar",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Upload avatar")
-    public ResponseEntity<Object> uploadAvatar(HttpServletRequest request,@RequestPart MultipartFile file) {
+    public ResponseEntity<Object> uploadAvatar(HttpServletRequest request,@RequestPart(value = "file") MultipartFile file) {
        try{
            UserEntity userEntity = authenticationHandler.userAuthenticate(request);
            if(userEntity==null){
