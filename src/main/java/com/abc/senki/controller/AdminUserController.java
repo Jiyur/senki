@@ -23,7 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/admin")
 @SecurityRequirement(name = "bearerAuth")
-public class AdminController {
+public class AdminUserController {
     @Autowired
     AuthenticationHandler authenticationHandler;
     @Autowired

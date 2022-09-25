@@ -3,6 +3,7 @@ package com.abc.senki.controller;
 import com.abc.senki.handler.AuthenticationHandler;
 import com.abc.senki.model.entity.UserEntity;
 import com.abc.senki.model.payload.request.UserRequest.ChangePasswordRequest;
+import com.abc.senki.model.payload.request.UserRequest.ChangePhoneRequest;
 import com.abc.senki.model.payload.request.UserRequest.ChangeUserInfoRequest;
 import com.abc.senki.model.payload.request.UserRequest.ForgetPasswordRequest;
 import com.abc.senki.model.payload.response.ErrorResponse;
@@ -25,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.HashMap;
 
+import static com.abc.senki.common.ErrorDefinition.*;
 
 @RestController
 @SecurityRequirement(name = "bearerAuth")
@@ -47,7 +49,7 @@ public class UserController {
     public ResponseEntity<Object> profile(HttpServletRequest request){
         UserEntity userEntity= authenticationHandler.userAuthenticate(request);
         if(userEntity==null){
-            throw new BadCredentialsException("access token is expired");
+            throw new BadCredentialsException(ACCESS_TOKEN_EXPIRED.getMessage());
         }
         else{
             HashMap<String,Object> data=new HashMap<>();
@@ -59,37 +61,67 @@ public class UserController {
     @Operation(summary = "Change user info")
     public ResponseEntity<Object> changeInfo(HttpServletRequest request,@RequestBody @Valid ChangeUserInfoRequest user) {
         UserEntity userEntity = authenticationHandler.userAuthenticate(request);
-        if(userEntity==null){
-            throw new BadCredentialsException("access token is expired");
+        try{
+            if(userEntity==null){
+                throw new BadCredentialsException(ACCESS_TOKEN_EXPIRED.getMessage());
+            }
+            else{
+                userEntity.setFullName(user.getFullName());
+                userEntity.setGender(user.getGender());
+                userEntity.setNickName(user.getNickName());
+                userService.saveInfo(userEntity);
+                HashMap<String,Object> data=new HashMap<>();
+                data.put("user","");
+                return ResponseEntity.ok(new SuccessResponse(HttpStatus.OK.value(),"Change profile successfully",data));
+            }
         }
-        else{
-            userEntity.setFullName(user.getFullName());
-            userEntity.setGender(user.getGender());
-            userEntity.setNickName(user.getNickName());
-            userService.saveInfo(userEntity);
-            HashMap<String,Object> data=new HashMap<>();
-            data.put("user","");
-            return ResponseEntity.ok(new SuccessResponse(HttpStatus.OK.value(),"Change profile successfully",data));
+        catch (Exception e){
+            return ResponseEntity.badRequest().body(ErrorResponse.error(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
+        }
+    }
+    @PutMapping("profile/changePhone")
+    @Operation(summary = "Change user phone")
+    public ResponseEntity<Object> changePhone(HttpServletRequest request, @RequestBody @Valid ChangePhoneRequest user) {
+        UserEntity userEntity = authenticationHandler.userAuthenticate(request);
+        try{
+            if(userEntity==null){
+                throw new BadCredentialsException(ACCESS_TOKEN_EXPIRED.getMessage());
+            }
+            else{
+                userEntity.setPhone(user.getPhone());
+                userService.saveInfo(userEntity);
+                HashMap<String,Object> data=new HashMap<>();
+                data.put("user",user.getPhone());
+                return ResponseEntity.ok(new SuccessResponse(HttpStatus.OK.value(),"Change phone number successfully",data));
+            }
+        }
+        catch (Exception e){
+            return ResponseEntity.badRequest().body(ErrorResponse.error(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
         }
     }
     @PutMapping("profile/changeEmail")
     @Operation(summary = "Change user email")
     public ResponseEntity<Object> changeEmail(HttpServletRequest request,@RequestBody @Valid ForgetPasswordRequest user) {
         UserEntity userEntity = authenticationHandler.userAuthenticate(request);
-        if(userEntity==null){
-            throw new BadCredentialsException("access token is expired");
-        }
-        else{
-            if(Boolean.TRUE.equals(userService.existsByEmail(user.getEmail()))){
-                return ResponseEntity.status(HttpStatus.CONFLICT)
-                        .body(ErrorResponse.error("Email is already exist", HttpStatus.CONFLICT.value()));
+        try{
+            if(userEntity==null){
+                throw new BadCredentialsException(ACCESS_TOKEN_EXPIRED.getMessage());
             }
             else{
-                userEntity.setEmail(user.getEmail());
-                userService.saveInfo(userEntity);
-                HashMap<String,Object> data=new HashMap<>();
-                return ResponseEntity.ok(new SuccessResponse(HttpStatus.OK.value(),"Change email successfully",data));
+                if(Boolean.TRUE.equals(userService.existsByEmail(user.getEmail()))){
+                    return ResponseEntity.status(HttpStatus.CONFLICT)
+                            .body(ErrorResponse.error("Email is already exist", HttpStatus.CONFLICT.value()));
+                }
+                else{
+                    userEntity.setEmail(user.getEmail());
+                    userService.saveInfo(userEntity);
+                    HashMap<String,Object> data=new HashMap<>();
+                    return ResponseEntity.ok(new SuccessResponse(HttpStatus.OK.value(),"Change email successfully",data));
+                }
             }
+        }
+        catch (Exception e){
+            return ResponseEntity.badRequest().body(ErrorResponse.error(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
         }
     }
     @PutMapping("/profile/changePassword")
@@ -98,7 +130,7 @@ public class UserController {
         UserEntity user=authenticationHandler.userAuthenticate(req);
         try{
             if(user==null){
-                throw new BadCredentialsException("User not found");
+                throw new BadCredentialsException(USER_NOT_FOUND.getMessage());
             }
             else{
                 if(!encoder.matches(request.getOldPassword(),user.getPassword())){
@@ -127,7 +159,7 @@ public class UserController {
        try{
            UserEntity userEntity = authenticationHandler.userAuthenticate(request);
            if(userEntity==null){
-               throw new BadCredentialsException("User not found !");
+               throw new BadCredentialsException(USER_NOT_FOUND.getMessage());
            }
            if(!imageStorageService.isImageFile(file)){
                return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)

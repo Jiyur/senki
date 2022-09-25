@@ -1,4 +1,4 @@
-package com.abc.senki.service.impl;
+package com.abc.senki.service.implement;
 
 import com.abc.senki.service.ImageStorageService;
 import com.cloudinary.Cloudinary;
@@ -26,18 +26,17 @@ public class ImageStorageServiceImpl implements ImageStorageService {
     }
 
     public Cloudinary cloudinary(){
-        Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
+        return  new Cloudinary(ObjectUtils.asMap(
                 "cloud_name", "dddmdgm0w",
                 "api_key", "268346896576755",
                 "api_secret", "4muXOci9jibh6RGN_ywRI5s6qbo"));
-        return cloudinary;
     }
 
     @Override
     public String saveAvatar(MultipartFile file, String fileName){
         Map r;
         try {
-            r = this.cloudinary().uploader().upload(file.getBytes(), ObjectUtils.asMap(RESOURCE_TYPE,"auto",UPLOAD_PRESET,"senki_avatar","public_id","tiki_avatar/"+fileName));
+            r = this.cloudinary().uploader().upload(file.getBytes(), ObjectUtils.asMap(RESOURCE_TYPE,"auto",UPLOAD_PRESET,"senki_avatar","public_id","senki_avatar/"+fileName));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -58,7 +57,7 @@ public class ImageStorageServiceImpl implements ImageStorageService {
     public String saveProductImg(MultipartFile file, String fileName){
         Map r;
         try {
-            r = this.cloudinary().uploader().upload(file.getBytes(), ObjectUtils.asMap(RESOURCE_TYPE,"auto",UPLOAD_PRESET,"img_product","public_id","tiki_product/"+fileName));
+            r = this.cloudinary().uploader().upload(file.getBytes(), ObjectUtils.asMap(RESOURCE_TYPE,"auto",UPLOAD_PRESET,"img_product","public_id","senki_product/"+fileName));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -79,7 +78,7 @@ public class ImageStorageServiceImpl implements ImageStorageService {
         Map r;
         try {
             r = ObjectUtils.asMap("invalidate", true );
-            this.cloudinary().api().deleteResourcesByPrefix("tiki_product/"+String.valueOf(fileName),r);
+            this.cloudinary().api().deleteResourcesByPrefix("senki_product/"+String.valueOf(fileName),r);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

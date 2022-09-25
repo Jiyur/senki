@@ -1,4 +1,4 @@
-package com.abc.senki.service.impl;
+package com.abc.senki.service.implement;
 
 import com.abc.senki.model.entity.UserEntity;
 import com.abc.senki.security.jwt.JwtUtils;

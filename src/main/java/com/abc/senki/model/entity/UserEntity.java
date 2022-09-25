@@ -6,6 +6,8 @@ import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -34,18 +36,14 @@ public class UserEntity {
     @Column(name = "\"full_name\"")
     private String fullName;
 
-    @Column(name = "email")
     private String email;
 
-    @Column(name = "\"phone\"")
     private String phone;
 
 
     @JsonIgnore
-    @Column(name = "\"password\"")
     private String password;
 
-    @Column(name = "\"gender\"")
     private String gender;
 
     @Column(name = "\"img\"")
@@ -53,6 +51,13 @@ public class UserEntity {
 
     @Column(name = "\"nick_name\"")
     private String nickName;
+
+    @Column(name = "\"create_at\"")
+    private LocalDateTime createAt;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user",targetEntity = ProductRatingEntity.class,fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    private List<ProductRatingEntity> productRating;
 
     private boolean status;
     private boolean active;
