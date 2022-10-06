@@ -14,5 +14,7 @@ public interface ProductRatingService {
     void saveRating(ProductRatingEntity productRating);
     List<ProductRatingEntity> getRatingByProductId(String productId);
     List<ProductRatingEntity> getRatingByUserId(UUID userId);
+    ProductRatingEntity getRatingById(String id);
+    void deleteRating(UUID id);
 
 }

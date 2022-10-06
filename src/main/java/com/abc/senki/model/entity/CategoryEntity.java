@@ -42,6 +42,11 @@ public class CategoryEntity  {
     @OneToMany(mappedBy = "parent",cascade = CascadeType.ALL)
     private Collection<CategoryEntity> subCategories;
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "\"category_attribute\"",
+            joinColumns = @JoinColumn(name = "\"cate_id\""),
+            inverseJoinColumns = @JoinColumn(name = "\"attribute_id\""))
+    private Set<AttributeEntity> attributeEntities;
 
 
 }

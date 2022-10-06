@@ -54,12 +54,20 @@ public class ProductEntity  {
     @JoinColumn(name = "\"cate_id\"")
     private CategoryEntity productCategory;
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "\"product_attribute\"",
+            joinColumns = @JoinColumn(name = "\"product_id\""),
+            inverseJoinColumns = @JoinColumn(name = "\"attribute_value_id\""))
+    private Collection<AttributeValueEntity> attributeValueEntities;
+
     public void setInfo(String name,String description,Double price,int stock){
         this.name=name;
         this.description=description;
         this.price=price;
         this.stock=stock;
     }
+
+
 
 
 }

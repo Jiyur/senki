@@ -18,17 +18,15 @@ public class AppUserDetail implements UserDetails {
     @JsonIgnore
     private UUID id;
     private String username;
-    private String email;
     @JsonIgnore
     private String password;
     @JsonIgnore
     private Collection<? extends GrantedAuthority> authorities;
     private Collection<String> roles;
-    public AppUserDetail(UUID id, String username, String email, String password,
+    public AppUserDetail(UUID id, String username,  String password,
                          Collection<? extends GrantedAuthority> authorities, Collection<String> roles, Boolean active, Boolean isAccountNonLocked) {
         this.id = id;
         this.username = username;
-        this.email = email;
         this.password = password;
         this.authorities = authorities;
         this.roles = roles;
@@ -50,7 +48,6 @@ public class AppUserDetail implements UserDetails {
         return new AppUserDetail(
                 user.getId(),
                 user.getPhone(),
-                user.getEmail(),
                 user.getPassword(),
                 authorities,
                 roleNames,
