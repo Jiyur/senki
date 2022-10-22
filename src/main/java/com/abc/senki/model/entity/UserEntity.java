@@ -56,6 +56,10 @@ public class UserEntity {
     private LocalDateTime createAt;
 
     @JsonIgnore
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    private List<AddressEntity> address;
+
+    @JsonIgnore
     @OneToMany(mappedBy = "user",targetEntity = ProductRatingEntity.class,fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private List<ProductRatingEntity> productRating;
 
@@ -66,6 +70,8 @@ public class UserEntity {
         this.email = email;
         this.password = password;
     }
+
+
 
     public UserEntity() {
         }

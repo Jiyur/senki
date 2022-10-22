@@ -26,4 +26,8 @@ public class DistrictEntity {
     @Column(name = "\"pro_id\"")
     private String province;
 
+    @OneToMany(mappedBy = "district",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<AddressEntity> addressEntities;
+
 }

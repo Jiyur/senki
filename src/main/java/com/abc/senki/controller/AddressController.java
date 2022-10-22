@@ -11,10 +11,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -22,8 +19,10 @@ import java.util.Map;
 
 @RestController
 @AllArgsConstructor
+@RequestMapping("/api/address")
 public class AddressController {
     private final AddressService addressService;
+
 
     @GetMapping("/province/all")
     @Operation(summary = "get all province")
@@ -45,7 +44,7 @@ public class AddressController {
             return ResponseEntity.badRequest().body(ErrorResponse.error(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
         }
     }
-   
+
 
     @GetMapping("/district/{id}")
     @Operation(summary = "get district by province id")
