@@ -4,7 +4,7 @@ import com.abc.senki.model.entity.UserEntity;
 import com.abc.senki.security.jwt.JwtUtils;
 import com.abc.senki.service.UserService;
 import com.abc.senki.util.CookieUtils;
-import com.abc.senki.util.HttpCookieOAuth2AuthorizationRequestRepository;
+import com.abc.senki.util.CookieOAuth2RequestRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,8 +20,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Optional;
 
 @Slf4j
@@ -33,12 +31,13 @@ public class OAuth2Handler extends SimpleUrlAuthenticationSuccessHandler {
     @Autowired
     UserService userService;
 
-    private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
+    private final CookieOAuth2RequestRepository cookieOAuth2RequestRepository;
 
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         String targetUrl = determineTargetUrl(request, response,authentication);
+        //linkfront/rerirect?token=xxxx
         if (response.isCommitted()) {
             log.debug("Response has already been committed. Unable to redirect to " + targetUrl);
             return;
@@ -50,7 +49,7 @@ public class OAuth2Handler extends SimpleUrlAuthenticationSuccessHandler {
 
     @Override
     protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response,Authentication authentication) {
-        Optional<String> redirectUri = CookieUtils.getCookie(request, HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME)
+        Optional<String> redirectUri = CookieUtils.getCookie(request, CookieOAuth2RequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME)
                 .map(Cookie::getValue);
         System.out.println("redirectUri: " + redirectUri);
         if (redirectUri.isEmpty()) {
@@ -80,7 +79,7 @@ public class OAuth2Handler extends SimpleUrlAuthenticationSuccessHandler {
     }
     protected void clearAuthenticationAttributes(HttpServletRequest request, HttpServletResponse response) {
         super.clearAuthenticationAttributes(request);
-        httpCookieOAuth2AuthorizationRequestRepository.removeAuthorizationRequestCookies(request, response);
+        cookieOAuth2RequestRepository.removeAuthorizationRequestCookies(request, response);
     }
 
 }
