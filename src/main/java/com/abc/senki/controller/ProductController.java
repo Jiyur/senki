@@ -164,6 +164,8 @@ public class ProductController  {
                     .body(ErrorResponse.error(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
         }
     }
+
+
     public Pageable createPageRequest(int pageNo, int pageSize, String sort) {
         return switch (sort) {
             case PRICE_ASC -> PageRequest.of(pageNo, pageSize, Sort.by("price").ascending());
@@ -171,5 +173,6 @@ public class ProductController  {
             default -> PageRequest.of(pageNo, pageSize, Sort.by(sort).descending());
         };
     }
+
 
 }
