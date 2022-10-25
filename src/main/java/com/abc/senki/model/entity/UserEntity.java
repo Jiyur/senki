@@ -63,6 +63,14 @@ public class UserEntity {
     @OneToMany(mappedBy = "user",targetEntity = ProductRatingEntity.class,fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private List<ProductRatingEntity> productRating;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "user",targetEntity = OrderEntity.class,fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    private List<OrderEntity> orderList;
+
+    @JsonIgnore
+    @OneToOne (mappedBy = "user",targetEntity = CartEntity.class,cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    private CartEntity cart;
+
     private boolean status;
     private boolean active;
 

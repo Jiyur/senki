@@ -9,6 +9,7 @@ import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -35,7 +36,12 @@ public class AttributeValueEntity {
     @JoinColumn(name = "\"attribute_id\"")
     private AttributeEntity attributeEntity;
 
-    public void setInfo(AttributeEntity attributeEntity, String value) {
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "attributeValue")
+    private List<CartItemEntity> cartItemEntities;
+
+    public void setInfo(AttributeEntity attributeEntity,String value) {
         this.attributeEntity = attributeEntity;
         this.value = value;
     }

@@ -6,6 +6,8 @@ import com.abc.senki.service.AttributeValueService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
+
 @Component
 public class AttributeValueServiceImpl implements AttributeValueService {
     @Autowired
@@ -13,5 +15,10 @@ public class AttributeValueServiceImpl implements AttributeValueService {
     @Override
     public void saveValue(AttributeValueEntity value) {
         attributeValueRepository.save(value);
+    }
+
+    @Override
+    public AttributeValueEntity getValueById(UUID id) {
+        return attributeValueRepository.findById(id).orElse(null);
     }
 }

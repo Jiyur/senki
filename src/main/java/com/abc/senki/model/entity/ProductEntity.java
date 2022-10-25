@@ -45,9 +45,8 @@ public class ProductEntity  {
     @Column(name = "\"created_at\"")
     private LocalDateTime  createdAt;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "product",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    private List<ImageProductEntity> imageProductEntityList;
+    private List<ImageProductEntity> imageList;
 
     @JsonBackReference
     @ManyToOne(fetch = FetchType.EAGER)
@@ -58,7 +57,7 @@ public class ProductEntity  {
     @JoinTable(name = "\"product_attribute\"",
             joinColumns = @JoinColumn(name = "\"product_id\""),
             inverseJoinColumns = @JoinColumn(name = "\"attribute_value_id\""))
-    private Collection<AttributeValueEntity> attributeValueEntities;
+    private Collection<AttributeValueEntity> attributeValueList;
 
     public void setInfo(String name,String description,Double price,int stock){
         this.name=name;
@@ -68,6 +67,14 @@ public class ProductEntity  {
     }
 
 
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "cart",targetEntity = CartItemEntity.class,fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    private List<CartItemEntity> list;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "product",targetEntity = OrderDetailEntity.class,fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    private List<OrderDetailEntity> orderDetailList;
 
 
 }

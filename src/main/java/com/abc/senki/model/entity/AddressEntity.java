@@ -9,6 +9,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.annotation.Nullable;
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "\"addresses\"")
@@ -60,6 +61,10 @@ public class AddressEntity {
     @ManyToOne
     @JoinColumn(name = "\"user\"")
     private UserEntity user;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "address",targetEntity =OrderEntity.class ,cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    private List<OrderEntity> order;
 
     public void setInfo(String fullName,String companyName,String phoneNumber,String addressDetail,UserEntity user){
         this.fullName = fullName;
