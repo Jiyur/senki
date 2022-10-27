@@ -14,5 +14,7 @@ import javax.validation.constraints.NotEmpty;
 public class AddOrderRequest {
     @NotEmpty
     private String addressId;
+    @NotEmpty
+    private String paymentMethod;
 
 }

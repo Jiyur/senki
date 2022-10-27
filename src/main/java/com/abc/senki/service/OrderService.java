@@ -11,7 +11,7 @@ import java.util.List;
 @Component
 @Service
 public interface OrderService  {
-    OrderEntity saveOrder(OrderEntity order, CartEntity cart);
+    void saveOrder(OrderEntity order, CartEntity cart);
     OrderEntity getOrderById(int id);
     List<OrderEntity> getOrderByUser(UserEntity user);
     List<OrderEntity> getOrderByStatus(String status);

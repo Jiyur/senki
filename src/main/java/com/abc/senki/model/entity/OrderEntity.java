@@ -45,11 +45,14 @@ public class OrderEntity {
 
     private String status;
 
+    private String method;
+
     private LocalDateTime createdAt;
 
     private Double shipFee;
 
     public OrderEntity(UserEntity user) {
+        this.id = UUID.randomUUID();
         this.user = user;
         this.status=PENDING.getMesssage();
         this.createdAt = LocalDateTime.now();

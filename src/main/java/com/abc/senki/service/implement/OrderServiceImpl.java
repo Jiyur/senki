@@ -19,26 +19,10 @@ public class OrderServiceImpl implements OrderService {
     CartService cartService;
 
     @Override
-    public OrderEntity saveOrder(OrderEntity order, CartEntity cart) {
+    public void saveOrder(OrderEntity order, CartEntity cart) {
         //Init new order detail list
-        List<OrderDetailEntity> orderDetailList = new ArrayList<>();
-        for (CartItemEntity cartItem:cart.getCartItems())
-        {
-            OrderDetailEntity orderDetail=new OrderDetailEntity();
-            orderDetail.setInfo(order,
-                    cartItem.getProduct(),
-                    cartItem.getAttributeValue(),
-                    cartItem.getQuantity(),
-                    cartItem.getProduct().getPrice());
-            orderDetailList.add(orderDetail);
-            order.setTotal(order.getTotal()+cartItem.getProduct().getPrice()*cartItem.getQuantity());
-        }
-        //Set item and delete cart
-        order.setOrderDetails(orderDetailList);
-
-        order.setTotal(order.getTotal()+order.getShipFee());
+        orderRepository.save(order);
         cartService.deleteItemsByCart(cart);
-        return orderRepository.save(order);
     }
 
     @Override
