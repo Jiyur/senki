@@ -197,9 +197,9 @@ public class UserController {
             if(userEntity==null){
                 throw new BadCredentialsException(USER_NOT_FOUND.getMessage());
             }
-            List<AddressEntity> list=userEntity.getAddress();
+            AddressEntity address=userEntity.getAddress();
             HashMap<String,Object> data=new HashMap<>();
-            data.put("address",list);
+            data.put("address",address);
 
             return ResponseEntity.ok(new SuccessResponse(HttpStatus.OK.value(), "Get address successfully", data));
         } catch (Exception e) {
@@ -215,7 +215,13 @@ public class UserController {
             if(userEntity==null){
                 throw new BadCredentialsException(USER_NOT_FOUND.getMessage());
             }
-            AddressEntity addressEntity=new AddressEntity();
+            AddressEntity addressEntity=null;
+            if(userEntity.getAddress()==null){
+                addressEntity=new AddressEntity();
+            }
+            else{
+                addressEntity=userEntity.getAddress();
+            }
             ProvinceEntity provinceEntity=addressService.getProvinceById(address.getProvince());
             DistrictEntity districtEntity=addressService.getDistrictById(address.getDistrict());
             CommuneEntity communeEntity=addressService.getCommuneById(address.getCommune());
@@ -247,19 +253,5 @@ public class UserController {
                     .body(ErrorResponse.error(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
         }
     }
-    @DeleteMapping("address/delete/{id}")
-    @Operation(summary = "delete user address")
-    public ResponseEntity<Object> deleteUserAddress(HttpServletRequest request,@PathVariable("id") String id) {
-        try {
-            UserEntity userEntity = authenticationHandler.userAuthenticate(request);
-            if(userEntity==null){
-                throw new BadCredentialsException(USER_NOT_FOUND.getMessage());
-            }
-            addressService.deleteAddress(id);
-            return ResponseEntity.ok(new SuccessResponse(HttpStatus.OK.value(), "Delete address successfully", null));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest()
-                    .body(ErrorResponse.error(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
-        }
-    }
+
 }

@@ -13,8 +13,6 @@ import javax.validation.constraints.NotEmpty;
 @AllArgsConstructor
 public class AddOrderRequest {
     @NotEmpty
-    private String addressId;
-    @NotEmpty
     private String paymentMethod;
 
 }

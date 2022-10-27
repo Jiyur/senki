@@ -55,9 +55,8 @@ public class UserEntity {
     @Column(name = "\"create_at\"")
     private LocalDateTime createAt;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    private List<AddressEntity> address;
+    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    private AddressEntity address;
 
     @JsonIgnore
     @OneToMany(mappedBy = "user",targetEntity = ProductRatingEntity.class,fetch = FetchType.LAZY,cascade = CascadeType.ALL)

@@ -46,7 +46,7 @@ public class OrderController {
     OrderService orderService;
     @PostMapping("/add")
     @Operation(summary = "Add new order")
-    public ResponseEntity<Object> addOrder(HttpServletRequest request, @RequestBody AddOrderRequest address
+    public ResponseEntity<Object> addOrder(HttpServletRequest request, @RequestBody AddOrderRequest orderRequest
                                            ) {
         try{
             UserEntity user=authenticationHandler.userAuthenticate(request);
@@ -64,11 +64,9 @@ public class OrderController {
                         .body(new ErrorResponse("Cart is empty", HttpStatus.BAD_REQUEST.value()));
             }
             OrderEntity order=new OrderEntity(user);
-            String addressId= address.getAddressId();
             //Set order address
-            order.setAddress(user.getAddress()
-                    .stream()
-                    .filter(x->x.getId().equals(addressId)).findFirst().orElse(null));
+            order.setAddress(user.getAddress());
+
             if(order.getAddress()==null){
                 return ResponseEntity.badRequest()
                         .body(new ErrorResponse("Address not found", HttpStatus.BAD_REQUEST.value()));
@@ -76,7 +74,7 @@ public class OrderController {
             //Calculate total
             orderCalculation(order,cart);
             //Save order
-            String payMethod=address.getPaymentMethod();
+            String payMethod=orderRequest.getPaymentMethod();
             switch (payMethod) {
                 case "COD" -> {
                     order.setMethod("COD");
@@ -84,7 +82,6 @@ public class OrderController {
                 }
                 case "PAYPAL" -> {
                     String link=paypalService.paypalPayment(order,request);
-                    System.out.println(link);
                     if(link==null){
                         return ResponseEntity.badRequest()
                                 .body(new ErrorResponse("Paypal payment error", HttpStatus.BAD_REQUEST.value()));

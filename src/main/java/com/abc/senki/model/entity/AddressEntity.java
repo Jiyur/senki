@@ -58,7 +58,7 @@ public class AddressEntity {
     private String addressDetail;
 
     @JsonIgnore
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "\"user\"")
     private UserEntity user;
 
