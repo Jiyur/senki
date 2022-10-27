@@ -1,5 +1,6 @@
 package com.abc.senki.service;
 
+import com.abc.senki.model.entity.CartEntity;
 import com.abc.senki.model.entity.OrderEntity;
 import com.abc.senki.model.entity.UserEntity;
 import org.springframework.stereotype.Component;
@@ -10,7 +11,7 @@ import java.util.List;
 @Component
 @Service
 public interface OrderService  {
-    OrderEntity saveOrder(OrderEntity order);
+    OrderEntity saveOrder(OrderEntity order, CartEntity cart);
     OrderEntity getOrderById(int id);
     List<OrderEntity> getOrderByUser(UserEntity user);
     List<OrderEntity> getOrderByStatus(String status);

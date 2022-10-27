@@ -34,9 +34,7 @@ public class OrderDetailEntity {
     @JoinColumn(name="\"attribute_value_id\"")
     private AttributeValueEntity attributeValue;
 
-    private double price;
-
-
+    private Double price;
 
     @Column(name = "\"quantity\"")
     private int quantity;

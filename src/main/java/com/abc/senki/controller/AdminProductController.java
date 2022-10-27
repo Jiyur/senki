@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static com.abc.senki.common.ErrorDefinition.*;
@@ -40,13 +41,12 @@ public class AdminProductController {
     @Autowired
     ImageStorageService imageStorageService;
 
-    @PostMapping("insert")
+    @PostMapping("add")
     @Operation(summary = "Insert product")
     public ResponseEntity<Object> insertProduct(@RequestBody AddNewProductRequest request){
         CategoryEntity categoryEntity = categoryService.findById(request.getCate_id());
         ProductEntity product= ProductMapping.toEntity(request,categoryEntity);
-
-
+        product.setCreatedAt(LocalDateTime.now());
         try{
             productService.saveProduct(product);
             return ResponseEntity

@@ -10,7 +10,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
-
+import static com.abc.senki.common.OrderStatus.*;
 @Entity
 @Table(name="\"orders\"")
 @Getter
@@ -47,9 +47,14 @@ public class OrderEntity {
 
     private LocalDateTime createdAt;
 
+    private Double shipFee;
+
     public OrderEntity(UserEntity user) {
         this.user = user;
+        this.status=PENDING.getMesssage();
         this.createdAt = LocalDateTime.now();
+        this.total=0.0;
+        this.shipFee=15000.0;
     }
 
 

@@ -10,4 +10,5 @@ import java.util.Optional;
 @EnableJpaRepositories
 public interface CartRepository extends JpaRepository<CartEntity,Integer> {
     Optional<CartEntity> findByUserAndStatus(UserEntity entity, Boolean status);
+
 }

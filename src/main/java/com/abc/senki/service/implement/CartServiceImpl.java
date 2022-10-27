@@ -66,6 +66,12 @@ public class CartServiceImpl implements CartService {
         cartItemRepository.deleteById(id);
     }
 
+    //Delete all item in cart
+    @Override
+    public void deleteItemsByCart(CartEntity cart) {
+        cartItemRepository.deleteAllByCart(cart);
+    }
+
     @Override
     public CartItemEntity getCartItemById(int id) {
         return cartItemRepository.findById(id).orElse(null);

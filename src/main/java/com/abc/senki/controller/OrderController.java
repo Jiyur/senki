@@ -2,6 +2,7 @@ package com.abc.senki.controller;
 
 import com.abc.senki.handler.AuthenticationHandler;
 import com.abc.senki.model.entity.*;
+import com.abc.senki.model.payload.request.OrderRequest.AddOrderRequest;
 import com.abc.senki.model.payload.response.ErrorResponse;
 import com.abc.senki.model.payload.response.SuccessResponse;
 import com.abc.senki.service.OrderService;
@@ -13,10 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
@@ -35,41 +33,43 @@ public class OrderController {
 
     @Autowired
     OrderService orderService;
-    @GetMapping("/add")
+    @PostMapping("/add")
     @Operation(summary = "Add new order")
-    public ResponseEntity<Object> addOrder(HttpServletRequest request) {
+    public ResponseEntity<Object> addOrder(HttpServletRequest request, @RequestBody AddOrderRequest address
+                                           ) {
         try{
             UserEntity user=authenticationHandler.userAuthenticate(request);
             if(user==null){
-                return ResponseEntity.badRequest().body(new ErrorResponse("User not found", HttpStatus.BAD_REQUEST.value()));
+                return ResponseEntity.badRequest()
+                        .body(new ErrorResponse("User not found", HttpStatus.BAD_REQUEST.value()));
             }
             CartEntity cart=user.getCart();
             if(cart==null){
-                return ResponseEntity.badRequest().body(new ErrorResponse("Cart not found", HttpStatus.BAD_REQUEST.value()));
+                return ResponseEntity.badRequest()
+                        .body(new ErrorResponse("Cart not found", HttpStatus.BAD_REQUEST.value()));
+            }
+            if(cart.getCartItems().size()==0){
+                return ResponseEntity.badRequest()
+                        .body(new ErrorResponse("Cart is empty", HttpStatus.BAD_REQUEST.value()));
             }
             OrderEntity order=new OrderEntity(user);
-            //Set item into order
-            List<OrderDetailEntity> orderDetailList = new ArrayList<>();
-            for (CartItemEntity cartItem:cart.getCartItems())
-            {
-                OrderDetailEntity orderDetail=new OrderDetailEntity();
-                orderDetail.setInfo(order,
-                        cartItem.getProduct(),
-                        cartItem.getAttributeValue(),
-                        cartItem.getQuantity(),
-                        cartItem.getProduct().getPrice());
-                orderDetailList.add(orderDetail);
+            String addressId= address.getAddressId();
+            if(user.getAddress()
+                    .stream()
+                    .noneMatch(x->x.getId().equals(addressId))){
+                return ResponseEntity.badRequest()
+                        .body(new ErrorResponse("Address not found", HttpStatus.BAD_REQUEST.value()));
             }
-            order.setOrderDetails(orderDetailList);
+            order.setAddress(user.getAddress()
+                    .stream()
+                    .filter(x->x.getId().equals(addressId)).findFirst().orElse(null));
             //Save order
-            orderService.saveOrder(order);
-            return ResponseEntity.ok(new SuccessResponse(HttpStatus.OK.value(),"Add success",null));
-
+            orderService.saveOrder(order,cart);
+            return ResponseEntity.ok(new SuccessResponse(HttpStatus.OK.value(),"Order successfully",null));
         }
         catch (Exception e){
             return ResponseEntity.status(400).body(e.getMessage());
         }
-
-
     }
+
 }

@@ -59,6 +59,7 @@ public class ProductEntity  {
             inverseJoinColumns = @JoinColumn(name = "\"attribute_value_id\""))
     private Collection<AttributeValueEntity> attributeValueList;
 
+
     public void setInfo(String name,String description,Double price,int stock){
         this.name=name;
         this.description=description;

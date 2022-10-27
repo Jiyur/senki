@@ -28,6 +28,8 @@ public interface CartService {
 
     void deleteCartItem(int id);
 
+    void deleteItemsByCart(CartEntity cart);
+
     CartItemEntity getCartItemById(int id);
 
     CartEntity getCartByUid(UserEntity uid, Boolean status);
