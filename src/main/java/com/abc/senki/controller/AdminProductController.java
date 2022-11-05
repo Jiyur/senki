@@ -6,6 +6,7 @@ import com.abc.senki.model.entity.ProductEntity;
 import com.abc.senki.model.payload.request.ProductRequest.AddNewProductRequest;
 import com.abc.senki.model.payload.response.ErrorResponse;
 import com.abc.senki.model.payload.response.SuccessResponse;
+import com.abc.senki.repositories.BrandService;
 import com.abc.senki.service.CategoryService;
 import com.abc.senki.service.ImageStorageService;
 import com.abc.senki.service.ProductService;
@@ -41,16 +42,23 @@ public class AdminProductController {
     @Autowired
     ImageStorageService imageStorageService;
 
+    @Autowired
+    BrandService brandService;
+
     @PostMapping("add")
     @Operation(summary = "Insert product")
     public ResponseEntity<Object> insertProduct(@RequestBody AddNewProductRequest request){
         CategoryEntity categoryEntity = categoryService.findById(request.getCate_id());
         ProductEntity product= ProductMapping.toEntity(request,categoryEntity);
-        product.setCreatedAt(LocalDateTime.now());
+        if(request.getBrand_id().length()>0){
+            product.setBrand(brandService.getBrandById(Integer.parseInt(request.getBrand_id())));
+        }
         try{
             productService.saveProduct(product);
+            HashMap<String,Object> data=new HashMap<>();
+            data.put("product_id",product.getId());
             return ResponseEntity
-                    .ok(new SuccessResponse(HttpStatus.OK.value(),"Insert product successfully", null));
+                    .ok(new SuccessResponse(HttpStatus.OK.value(),"Insert product successfully", data));
         }
         catch (Exception e){
             return ResponseEntity.badRequest()
@@ -77,6 +85,9 @@ public class AdminProductController {
         try{
             ProductEntity product=productService.findById(id);
             product.setInfo(request.getName(), request.getDescription(), request.getPrice(), request.getStock());
+            if(request.getBrand_id().length()>0){
+                product.setBrand(brandService.getBrandById(Integer.parseInt(request.getBrand_id())));
+            }
             productService.saveProduct(product);
             return ResponseEntity
                     .ok(new SuccessResponse(HttpStatus.OK.value(),"Update product successfully", null));

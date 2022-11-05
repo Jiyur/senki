@@ -71,8 +71,8 @@ public class PaypalService {
 
         try {
             Payment payment = createPayment(order, "USD", "paypal", "sale",
-                    request.getHeader("origin")+CANCEL_URL+order.getId().toString(),
-                    request.getHeader("origin")+SUCCESS_URL+order.getId().toString());
+                    request.getHeader("origin")+CANCEL_URL+order.getUser().getId().toString(),
+                    request.getHeader("origin")+SUCCESS_URL+order.getUser().getId().toString());
             for(Links link:payment.getLinks()){
                 if(link.getRel().equals("approval_url")){
                     return link.getHref();

@@ -5,7 +5,6 @@ import com.abc.senki.model.entity.*;
 import com.abc.senki.model.payload.request.CartRequest.AddCartItemRequest;
 import com.abc.senki.model.payload.response.ErrorResponse;
 import com.abc.senki.model.payload.response.SuccessResponse;
-import com.abc.senki.service.AttributeValueService;
 import com.abc.senki.service.CartService;
 import com.abc.senki.service.ProductService;
 import com.abc.senki.service.UserService;
@@ -21,7 +20,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 @RestController
 @SecurityRequirement(name = "bearerAuth")
@@ -39,8 +37,7 @@ public class CartController {
     @Autowired
     private ProductService productService;
 
-    @Autowired
-    private AttributeValueService attributeValueService;
+
 
     @GetMapping("/get")
     @Operation(summary = "Get cart by user")
@@ -87,12 +84,6 @@ public class CartController {
                return ResponseEntity.badRequest().body(ErrorResponse.error("Product not found", HttpStatus.BAD_REQUEST.value()));
            }
            //          Check if there is a attribute value
-           if(addRequest.getAttributeValueId().length()>0){
-               AttributeValueEntity attributeValue=attributeValueService.getValueById(UUID.fromString(addRequest.getAttributeValueId()));
-               CartItemEntity cartItem=new CartItemEntity();
-               cartItem.setInfo(cart,product,attributeValue,addRequest.getQuantity());
-               cartService.saveCartItem(cartItem);
-           }
 
            else{
                CartItemEntity cartItem=new CartItemEntity();

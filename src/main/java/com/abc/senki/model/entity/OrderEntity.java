@@ -19,13 +19,6 @@ import static com.abc.senki.common.OrderStatus.*;
 @AllArgsConstructor
 public class OrderEntity {
     @Id
-    @GeneratedValue(
-            generator = "UUID"
-    )
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator"
-    )
     private UUID id;
 
     private Double total;
@@ -56,6 +49,7 @@ public class OrderEntity {
         this.user = user;
         this.status=PENDING.getMesssage();
         this.createdAt = LocalDateTime.now();
+        this.address = user.getAddress();
         this.total=0.0;
         this.shipFee=15000.0;
     }

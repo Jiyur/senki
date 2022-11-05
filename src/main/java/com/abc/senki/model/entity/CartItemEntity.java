@@ -32,28 +32,20 @@ public class CartItemEntity {
     private ProductEntity product;
 
 
-    @ManyToOne
-    @JoinColumn(name="\"attribute_value_id\"")
-    private AttributeValueEntity attributeValue;
+
 
 
 
     @Column(name = "\"quantity\"")
     private int quantity;
 
-    public void setInfo(CartEntity cart, ProductEntity product, AttributeValueEntity attributeValue, int quantity) {
-        this.cart = cart;
-        this.product = product;
-        this.attributeValue = attributeValue;
-        this.quantity = quantity;
-
-    }
     public void setInfo(CartEntity cart, ProductEntity product,  int quantity) {
         this.cart = cart;
         this.product = product;
         this.quantity = quantity;
 
     }
+
 
 
 }

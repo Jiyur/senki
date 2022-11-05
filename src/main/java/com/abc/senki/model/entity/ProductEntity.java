@@ -21,13 +21,6 @@ import java.util.UUID;
 @Table(name = "\"products\"")
 public class ProductEntity  {
     @Id
-    @GeneratedValue(
-            generator = "UUID"
-    )
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator"
-    )
     private UUID id;
 
     private Double price;
@@ -53,11 +46,12 @@ public class ProductEntity  {
     @JoinColumn(name = "\"cate_id\"")
     private CategoryEntity productCategory;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "\"product_attribute\"",
-            joinColumns = @JoinColumn(name = "\"product_id\""),
-            inverseJoinColumns = @JoinColumn(name = "\"attribute_value_id\""))
-    private Collection<AttributeValueEntity> attributeValueList;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "\"brand_id\"")
+    private BrandEntity brand;
+
+
+
 
 
     public void setInfo(String name,String description,Double price,int stock){
@@ -73,9 +67,8 @@ public class ProductEntity  {
     @OneToMany(mappedBy = "cart",targetEntity = CartItemEntity.class,fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private List<CartItemEntity> list;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "product",targetEntity = OrderDetailEntity.class,fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    private List<OrderDetailEntity> orderDetailList;
+
+
 
 
 }

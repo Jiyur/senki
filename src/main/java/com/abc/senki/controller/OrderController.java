@@ -76,18 +76,26 @@ public class OrderController {
             //Save order
             String payMethod=orderRequest.getPaymentMethod();
             switch (payMethod) {
+                //Handle COD Order
                 case "COD" -> {
                     order.setMethod("COD");
                     order.setStatus(PROCESSING.getMesssage());
+                    orderService.saveOrder(order,cart);
+                    return ResponseEntity
+                            .ok(new SuccessResponse(HttpStatus.OK.value(),"Order successfully",null));
+
                 }
+                //Handle PAYPAL Order
                 case "PAYPAL" -> {
                     String link=paypalService.paypalPayment(order,request);
                     if(link==null){
                         return ResponseEntity.badRequest()
                                 .body(new ErrorResponse("Paypal payment error", HttpStatus.BAD_REQUEST.value()));
                     }
-                    order.setMethod("PAYPAL");
-                    order.setStatus(PROCESSING.getMesssage());
+                    HashMap<String,Object> data=new HashMap<>();
+                    data.put("link",link);
+                    return ResponseEntity
+                            .ok(new SuccessResponse(HttpStatus.OK.value(),"PAYPAL Payment",data));
                 }
                 default -> {
                     return ResponseEntity.badRequest()
@@ -95,24 +103,24 @@ public class OrderController {
                 }
             }
 
-            orderService.saveOrder(order,cart);
-            return ResponseEntity.ok(new SuccessResponse(HttpStatus.OK.value(),"Order successfully",null));
         }
         catch (Exception e){
             return ResponseEntity.status(400).body(e.getMessage());
         }
     }
+
     @GetMapping("/pay/success/{id}")
     @Operation(summary = "Paypal payment success")
     public ResponseEntity<Object> successPay(@PathVariable String id,
                                              @RequestParam("paymentId") String paymentId,
                                              @RequestParam("PayerID") String payerId){
+        //Execute payment
         try{
             Payment payment=paypalService.executePayment(paymentId,payerId);
-            System.out.println(payment.toJSON());
             if(payment.getState().equals("approved")){
                 Map<String,Object> data=new HashMap<>();
-                data.put("orderId",id);
+                //Process order if payment success
+                data.put("orderId",paypalProcess(id));
                 return ResponseEntity.ok(
                         new SuccessResponse(HttpStatus.OK.value(),"Payment success",data));
             }
@@ -127,6 +135,7 @@ public class OrderController {
     public ResponseEntity<Object> cancelPay(@PathVariable String id){
         return ResponseEntity.badRequest().body(new ErrorResponse("Payment cancel",HttpStatus.BAD_REQUEST.value()));
     }
+    //Calculate order total
     public void orderCalculation(OrderEntity order, CartEntity cart){
         List<OrderDetailEntity> orderDetailList = new ArrayList<>();
         for (CartItemEntity cartItem:cart.getCartItems())
@@ -134,7 +143,6 @@ public class OrderController {
             OrderDetailEntity orderDetail=new OrderDetailEntity();
             orderDetail.setInfo(order,
                     cartItem.getProduct(),
-                    cartItem.getAttributeValue(),
                     cartItem.getQuantity(),
                     cartItem.getProduct().getPrice());
             orderDetailList.add(orderDetail);
@@ -144,6 +152,16 @@ public class OrderController {
         order.setOrderDetails(orderDetailList);
 
         order.setTotal(order.getTotal()+order.getShipFee());
+    }
+    //Process payment order after payment success
+    public String paypalProcess(String userId){
+        UserEntity user=userService.findById(UUID.fromString(userId));
+        OrderEntity order=new OrderEntity(user);
+        orderCalculation(order,user.getCart());
+        order.setMethod("PAYPAL");
+        order.setStatus(PROCESSING.getMesssage());
+        orderService.saveOrder(order,user.getCart());
+        return order.getId().toString();
     }
 
 

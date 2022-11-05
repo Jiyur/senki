@@ -46,6 +46,11 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
+    public void saveAddress(String province, String district, String commune, String detail) {
+
+    }
+
+    @Override
     public List<CommuneEntity> getAllCommuneInDistrict(String id) {
         return communeRepository.findAllByDistrict(id).stream().toList();
     }

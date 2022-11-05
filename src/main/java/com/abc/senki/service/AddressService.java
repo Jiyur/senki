@@ -16,7 +16,7 @@ public interface AddressService {
     List<AddressEntity> getAll();
     AddressEntity saveAddress(AddressEntity address);
     void deleteAddress(String id);
-
+    void saveAddress(String province, String district, String commune, String detail);
     List<CommuneEntity> getAllCommuneInDistrict(String id);
     List<DistrictEntity> getAllDistrictInProvince(String id);
     List<ProvinceEntity> getAllProvince();

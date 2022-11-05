@@ -30,4 +30,6 @@ public class AddNewProductRequest {
     private int stock;
 
     private String cate_id;
+
+    private String brand_id;
 }

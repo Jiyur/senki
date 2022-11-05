@@ -22,5 +22,4 @@ public class AddCartItemRequest {
     @Min(value = 1, message = "Quantity must bigger than 1")
     private int quantity;
 
-    private String attributeValueId;
 }
