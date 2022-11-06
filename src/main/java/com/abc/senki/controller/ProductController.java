@@ -8,11 +8,15 @@ import com.abc.senki.service.CategoryService;
 import com.abc.senki.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import net.kaczmarzyk.spring.data.jpa.domain.Like;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.Join;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -70,6 +74,7 @@ public class ProductController  {
                     .body(ErrorResponse.error(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
         }
     }
+
     private List<String> SortType(){
         List<String> list = new ArrayList<>();
         list.add("id");
@@ -90,8 +95,8 @@ public class ProductController  {
                                                      @RequestParam(defaultValue = "6") int size,
                                                      @RequestParam(defaultValue = "product_id") SortingEnum sort,
                                                      @RequestParam(defaultValue = "0") Double min_price,
-                                                     @RequestParam(defaultValue = "10000000") Double max_price,
-                                                     @RequestParam(required = false)String filter) {
+                                                     @RequestParam(defaultValue = "10000000") Double max_price
+                                                     ) {
         try{
             if(!SortType().contains(sort.getSort())){
                 return ResponseEntity.status(HttpStatus.CONFLICT)
@@ -135,7 +140,7 @@ public class ProductController  {
         }
     }
     @GetMapping("search/{key}")
-    @Operation(summary = "Search product by name")
+    @Operation(summary = "Search product by name, description")
     public ResponseEntity<Object> searchProductByName(@PathVariable String key,
                                                       @RequestParam(defaultValue = "0") int page,
                                                       @RequestParam(defaultValue = "6") int size,

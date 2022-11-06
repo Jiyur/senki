@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 @Transactional
@@ -50,6 +51,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<ProductEntity> findAll(Specification<ProductEntity> spec) {
+        return productsRepository.findAll().stream().toList();
+    }
+
+    @Override
     public List<ProductEntity> findAllByParent(String id, Pageable page,Double minPrice, Double maxPrice) {
         Page<ProductEntity> pageResult = productsRepository.findAllProductByParentId(UUID.fromString(id),page,minPrice,maxPrice);
         return  pageResult.stream().toList();
@@ -58,7 +64,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductEntity> listAll(String key, Pageable page, Double minPrice, Double maxPrice) {
-        Page<ProductEntity> pageResult = productsRepository.search(key,page,minPrice,maxPrice);
+        Page<ProductEntity> pageResult = productsRepository.search(key.toLowerCase(Locale.ROOT),page,minPrice,maxPrice);
         return pageResult.stream().toList();
 
     }

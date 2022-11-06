@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.UUID;
 
 @Table(name="\"order_details\"")
 @Entity
@@ -26,6 +27,7 @@ public class OrderDetailEntity {
 
     private String  productName;
     private String productImage;
+    private UUID productId;
 
 
 
@@ -39,6 +41,7 @@ public class OrderDetailEntity {
     public void setInfo(OrderEntity order, ProductEntity product, int quantity,double price) {
         this.order = order;
         this.productName = product.getName();
+        this.productId=product.getId();
         if(product.getImageList().size()>0){
             this.productImage = product.getImageList().get(0).getUrl();
         }
