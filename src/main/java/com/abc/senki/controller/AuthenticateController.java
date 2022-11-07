@@ -41,6 +41,7 @@ import static com.abc.senki.common.ErrorDefinition.ERROR_TRY_AGAIN;
 @RequestMapping("api/auth/")
 public class AuthenticateController {
     private static final String ACCESS_TOKEN = "accessToken";
+    private static final String REFRESH_TOKEN = "refreshToken";
     @Autowired
     private UserService userService;
     @Autowired
@@ -95,8 +96,10 @@ public class AuthenticateController {
         AppUserDetail userDetail = (AppUserDetail) authentication.getPrincipal();
 
         String accessToken = generateActiveToken(userDetail);
+        String refreshToken = generateRefreshToken(userDetail);
         HashMap<String, Object> data = new HashMap<>();
         data.put(ACCESS_TOKEN, accessToken);
+        data.put("refreshToken", refreshToken);
         data.put("user", loginUser);
 
         resp.setHeader("Set-Cookie", "test=value; Path=/");
@@ -125,7 +128,7 @@ public class AuthenticateController {
 
             HashMap<String, Object> data = new HashMap<>();
             data.put(ACCESS_TOKEN, accessToken);
-            data.put("refreshToken", refreshToken);
+            data.put(REFRESH_TOKEN, refreshToken);
             data.put("user", user);
 
             resp.setHeader("Set-Cookie", "test=value; Path=/");
