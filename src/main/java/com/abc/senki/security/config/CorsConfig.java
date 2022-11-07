@@ -13,7 +13,7 @@ public class CorsConfig {
                 registry.addMapping("/**")
                         .allowedMethods("GET","POST","DELETE","PUT","OPTIONS")
                         .allowedHeaders("*")
-                        .allowedOrigins("http://localhost:3000/","http://localhost:8080/","http://localhost:5000/")
+                        .allowedOrigins("http://localhost:3000","http://localhost:8080","http://localhost:5000")
                         .allowCredentials(true)
                         .maxAge(3600);
             }
