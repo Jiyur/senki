@@ -1,4 +1,4 @@
-package com.abc.senki.controller;
+package com.abc.senki.controller.client;
 
 
 import com.abc.senki.model.entity.CommuneEntity;

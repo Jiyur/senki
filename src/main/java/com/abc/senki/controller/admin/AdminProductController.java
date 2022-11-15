@@ -1,4 +1,4 @@
-package com.abc.senki.controller;
+package com.abc.senki.controller.admin;
 
 import com.abc.senki.mapping.ProductMapping;
 import com.abc.senki.model.entity.CategoryEntity;
