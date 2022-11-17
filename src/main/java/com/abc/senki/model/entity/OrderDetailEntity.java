@@ -44,5 +44,13 @@ public class OrderDetailEntity {
         this.quantity = quantity;
         this.price = price;
     }
+    public void setInfo(OrderEntity order, String name,UUID id,String imageUrl, int quantity, double price) {
+        this.order = order;
+        this.productName = name;
+        this.productId = id;
+       this.productImage = imageUrl;
+        this.quantity = quantity;
+        this.price = price;
+    }
 
 }

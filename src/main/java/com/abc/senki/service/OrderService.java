@@ -7,15 +7,16 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Component
 @Service
 public interface OrderService  {
-    void saveOrder(OrderEntity order, CartEntity cart);
-    OrderEntity getOrderById(int id);
+    void saveOrder(OrderEntity order);
+    OrderEntity getOrderById(UUID id);
     List<OrderEntity> getOrderByUser(UserEntity user);
     List<OrderEntity> getOrderByStatus(String status);
     List<OrderEntity> getOrderByUserAndStatus(UserEntity user, String status);
-    void deleteOrderById(int id);
-    void updateOrderStatus(int id, String status);
+    void deleteOrderById(UUID id);
+    void updateOrderStatus(UUID id, String status);
 }

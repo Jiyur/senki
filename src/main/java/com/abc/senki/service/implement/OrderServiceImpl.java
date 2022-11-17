@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -19,14 +20,13 @@ public class OrderServiceImpl implements OrderService {
     CartService cartService;
 
     @Override
-    public void saveOrder(OrderEntity order, CartEntity cart) {
+    public void saveOrder(OrderEntity order) {
         //Init new order detail list
         orderRepository.save(order);
-        cartService.deleteItemsByCart(cart);
     }
 
     @Override
-    public OrderEntity getOrderById(int id) {
+    public OrderEntity getOrderById(UUID id) {
         return null;
     }
 
@@ -46,12 +46,15 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void deleteOrderById(int id) {
-
+    public void deleteOrderById(UUID id) {
+        orderRepository.deleteById(id);
     }
 
     @Override
-    public void updateOrderStatus(int id, String status) {
-
+    public void updateOrderStatus(UUID id, String status) {
+        OrderEntity order = orderRepository.findById(id).orElse(null);
+        assert order != null;
+        order.setStatus(status);
+        orderRepository.save(order);
     }
 }
