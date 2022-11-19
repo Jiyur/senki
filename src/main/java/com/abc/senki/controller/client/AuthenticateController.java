@@ -162,7 +162,7 @@ public class AuthenticateController {
             return ResponseEntity.ok(new SuccessResponse(HttpStatus.OK.value(), "Email sent successfully", data));
         } catch (Exception e) {
             return ResponseEntity.badRequest()
-                    .body(ErrorResponse.error(ERROR_TRY_AGAIN.getMessage(), HttpStatus.BAD_REQUEST.value()));
+                    .body(ErrorResponse.error(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
         }
     }
 

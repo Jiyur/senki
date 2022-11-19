@@ -12,12 +12,14 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
-import javax.mail.MessagingException;
+import javax.mail.*;
+import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 
 @Component
@@ -53,6 +55,40 @@ public class EmailServiceImpl implements EmailService {
             helper.setSubject(subject);
             helper.setText(html,true);
             javaMailSender.send(message);
+
+//        final String username = "vmlej31287@gmail.com";
+//        final String password = "nhvlwdydflkdguxx";
+//
+//        Properties prop = new Properties();
+//        prop.put("mail.smtp.host", "smtp.gmail.com");
+//        prop.put("mail.smtp.port", "587");
+//        prop.put("mail.smtp.auth", "true");
+//        prop.put("mail.smtp.starttls.enable", "true"); //TLS
+//
+//        Session session = Session.getInstance(prop,
+//                new javax.mail.Authenticator() {
+//                    protected PasswordAuthentication getPasswordAuthentication() {
+//                        return new PasswordAuthentication(username, password);
+//                    }
+//                });
+//
+//        try{
+//            Template template= config.getTemplate("email-temp.ftl");
+//            Map<String, Object> model=new HashMap<>();
+//            model.put("fullName",user.getFullName());
+//            model.put("link",host+"?token="+jwtUtils.generateEmailJwtToken(user.getEmail()));
+//            String html = FreeMarkerTemplateUtils.processTemplateIntoString(template, model);
+//            Message message = new MimeMessage(session);
+//            message.setFrom(new InternetAddress("vmlej31287@gmail.com"));
+//            message.setRecipients(
+//                    Message.RecipientType.TO,
+//                    InternetAddress.parse(user.getEmail())
+//            );
+//            message.setSubject("Reset password");
+//            message.setText(html);
+//            Transport.send(message);
+//
+//
         } catch (MessagingException | IOException | TemplateException e) {
             e.printStackTrace();
         }
