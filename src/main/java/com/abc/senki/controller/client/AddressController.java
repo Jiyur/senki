@@ -24,7 +24,7 @@ public class AddressController {
     private final AddressService addressService;
 
 
-    @GetMapping("/province/all")
+    @GetMapping("/province")
     @Operation(summary = "get all province")
     public ResponseEntity<Object> getAllProvince() {
 
@@ -46,7 +46,7 @@ public class AddressController {
     }
 
 
-    @GetMapping("/district/{id}")
+    @GetMapping("/district/{id}/province")
     @Operation(summary = "get district by province id")
     public ResponseEntity<Object> getDistrictByProvinceId(@PathVariable("id") String id) {
 
@@ -66,7 +66,7 @@ public class AddressController {
             return ResponseEntity.badRequest().body(ErrorResponse.error(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
         }
     }
-    @GetMapping("/commune/{id}")
+    @GetMapping("/commune/{id}/district")
     @Operation(summary = "get commune by district id")
     public ResponseEntity<Object> getCommuneByDistrictId(@PathVariable("id") String id) {
 
@@ -86,7 +86,7 @@ public class AddressController {
             return ResponseEntity.badRequest().body(ErrorResponse.error(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
         }
     }
-    @GetMapping("/province/get/{id}")
+    @GetMapping("/province/{id}")
     @Operation(summary = "get province by id")
     public ResponseEntity<Object> getProvinceById(@PathVariable("id") String id) {
 
@@ -106,7 +106,7 @@ public class AddressController {
             return ResponseEntity.badRequest().body(ErrorResponse.error(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
         }
     }
-    @GetMapping("/district/get/{id}")
+    @GetMapping("/district/{id}")
     @Operation(summary = "get district by id")
     public ResponseEntity<Object> getDistrictById(@PathVariable("id") String id) {
 
@@ -126,7 +126,7 @@ public class AddressController {
             return ResponseEntity.badRequest().body(ErrorResponse.error(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
         }
     }
-    @GetMapping("/commune/get/{id}")
+    @GetMapping("/commune/{id}")
     @Operation(summary = "get commune by id")
     public ResponseEntity<Object> getCommuneById(@PathVariable("id") String id) {
 

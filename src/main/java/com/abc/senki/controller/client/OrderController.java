@@ -51,7 +51,7 @@ public class OrderController {
     @Autowired
     OrderService orderService;
 
-    @PostMapping("/add/paypal")
+    @PostMapping("paypal")
     @Operation(summary = "Add PAYPAL order")
     public ResponseEntity<Object> addPayPalOrder(HttpServletRequest request,@RequestBody List<CartItemList> cartList){
         try{
@@ -92,7 +92,7 @@ public class OrderController {
             return ResponseEntity.status(400).body(e.getMessage());
         }
     }
-    @PostMapping("/add/cod")
+    @PostMapping("cod")
     @Operation(summary = "Add COD order")
     public ResponseEntity<Object> addCODOrder(HttpServletRequest request,
                                               @RequestBody List<CartItemList> cartList

@@ -23,7 +23,7 @@ public class CategoryController {
     @Autowired
     CategoryService categoryService;
 
-    @GetMapping("/all")
+    @GetMapping("")
     @Operation(summary = "get all category")
     public ResponseEntity<Object> getAllCategory() {
         try{

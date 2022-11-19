@@ -57,7 +57,7 @@ public class ProductRatingController {
 
     @Autowired
     ModelMapper mapper;
-    @PostMapping("/add/{productId}")
+    @PostMapping("{productId}")
     @Operation(summary = "Add rating for product")
     public ResponseEntity<Object> addRating(@PathVariable String productId,
                                             HttpServletRequest request,
@@ -90,7 +90,7 @@ public class ProductRatingController {
 
 
     }
-    @GetMapping("all/{productId}")
+    @GetMapping("{productId}/product")
     @Operation(summary = "Get all rating for product")
     public ResponseEntity<Object> getAllRating(@PathVariable String productId){
         try{
@@ -107,7 +107,7 @@ public class ProductRatingController {
                     .body(ErrorResponse.error(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
         }
     }
-    @GetMapping("all")
+    @GetMapping("")
     @Operation(summary = "Get all rating for user")
     public ResponseEntity<Object> getAllRatingByUser(HttpServletRequest request){
         try{
@@ -125,7 +125,7 @@ public class ProductRatingController {
                     .body(ErrorResponse.error(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
         }
     }
-    @PostMapping("/add/comment/{ratingId}")
+    @PostMapping("/comment/{ratingId}")
     @Operation(summary = "Add comment for rating")
     public ResponseEntity<Object> addComment(@PathVariable String ratingId,
                                              HttpServletRequest request,
@@ -156,7 +156,7 @@ public class ProductRatingController {
 
 
     }
-    @DeleteMapping("/delete/{ratingId}")
+    @DeleteMapping("{ratingId}")
     @Operation(summary = "Delete rating")
     public ResponseEntity<Object> deleteRating(@PathVariable String ratingId,
                                                HttpServletRequest request){

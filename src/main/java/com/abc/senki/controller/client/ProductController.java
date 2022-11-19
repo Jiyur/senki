@@ -32,7 +32,7 @@ import static com.abc.senki.common.ErrorDefinition.*;
 import static com.abc.senki.service.implement.ProductServiceImpl.*;
 
 @RestController
-@RequestMapping("/api/product/")
+@RequestMapping("/api/product")
 public class ProductController  {
     private static final String PRICE_ASC = "product:price_up";
     private static final String PRICE_DESC = "product:price_down";
@@ -41,7 +41,7 @@ public class ProductController  {
 
     @Autowired
     CategoryService categoryService;
-    @GetMapping("all")
+    @GetMapping("")
     @Operation(summary = "Get all product")
     public ResponseEntity<Object> getAllProduct(@RequestParam(defaultValue = "0") int page,
                                                 @RequestParam(defaultValue = "6") int size,
@@ -89,8 +89,8 @@ public class ProductController  {
         return number>0;
     }
 
-    @GetMapping("/product-category/{id}")
-    @Operation(summary = "Get product by  category id")
+    @GetMapping("/{id}/category")
+    @Operation(summary = "Get product by category id")
     public ResponseEntity<Object> getProductByParent(@PathVariable String id,
                                                      @RequestParam(defaultValue = "0") int page,
                                                      @RequestParam(defaultValue = "6") int size,

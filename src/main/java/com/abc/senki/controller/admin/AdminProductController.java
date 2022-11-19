@@ -27,7 +27,7 @@ import static com.abc.senki.common.ErrorDefinition.*;
 
 @RestController
 @SecurityRequirement(name = "bearerAuth")
-@RequestMapping("/api/admin/product/")
+@RequestMapping("/api/admin/product")
 @RequiredArgsConstructor
 public class AdminProductController {
 
@@ -45,7 +45,7 @@ public class AdminProductController {
     @Autowired
     BrandService brandService;
 
-    @PostMapping("add")
+    @PostMapping("")
     @Operation(summary = "Insert product")
     public ResponseEntity<Object> insertProduct(@RequestBody AddNewProductRequest request){
         CategoryEntity categoryEntity = categoryService.findById(request.getCate_id());
@@ -65,7 +65,7 @@ public class AdminProductController {
                     .body(ErrorResponse.error(ERROR_TRY_AGAIN.getMessage(), HttpStatus.BAD_REQUEST.value()));
         }
     }
-    @DeleteMapping("delete/{id}")
+    @DeleteMapping("/{id}")
     @Operation(summary = "Delete product by id")
     public  ResponseEntity<Object> deleteProduct(@PathVariable("id") String id){
         try{
@@ -78,7 +78,7 @@ public class AdminProductController {
                     .body(ErrorResponse.error(ERROR_TRY_AGAIN.getMessage(), HttpStatus.BAD_REQUEST.value()));
         }
     }
-    @PutMapping("update/{id}")
+    @PutMapping("/{id}")
     @Operation(summary = "Update product by id")
     public ResponseEntity<Object> updateProduct(@PathVariable("id") String id,
                                                 @RequestBody AddNewProductRequest request){

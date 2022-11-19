@@ -22,13 +22,13 @@ import static com.abc.senki.common.ErrorDefinition.ERROR_TRY_AGAIN;
 
 @RestController
 @SecurityRequirement(name = "bearerAuth")
-@RequestMapping("/api/admin/category/")
+@RequestMapping("/api/admin/category")
 public class AdminCategoryController {
     @Autowired
     CategoryService categoryService;
     @Autowired
     ModelMapper mapper;
-    @GetMapping("all")
+    @GetMapping("")
     @Operation(summary = "Get all category")
     public ResponseEntity<Object> getAllCategory(){
         try{
@@ -43,7 +43,7 @@ public class AdminCategoryController {
         }
 
     }
-    @PostMapping("insert")
+    @PostMapping("")
     @Operation(summary = "Insert category")
     public ResponseEntity<Object> addNewCategory(@RequestBody AddNewCategoryRequest request,@RequestParam(defaultValue = "00000000-0000-0000-0000-000000000000") UUID parentId){
 

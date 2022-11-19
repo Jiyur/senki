@@ -32,7 +32,7 @@ public class AdminUserController {
     private PasswordEncoder encoder;
     @Autowired
     private UserService userService;
-    @GetMapping("user/all")
+    @GetMapping("user")
     @Operation(summary = "Get all user")
     public ResponseEntity<Object> listAll(HttpServletRequest request){
         List<UserEntity> list;
@@ -55,7 +55,7 @@ public class AdminUserController {
 
 
     }
-    @DeleteMapping("user/delete/{id}")
+    @DeleteMapping("user/{id}")
     @Operation(summary = "Delete user")
     public ResponseEntity<Object> deleteUser(HttpServletRequest request,
                                              @PathVariable("id") String id){

@@ -62,7 +62,7 @@ public class UserController {
             return ResponseEntity.ok(new SuccessResponse(HttpStatus.OK.value(),"Get user profile successfully",data));
         }
     }
-    @PutMapping("profile/changeInfo")
+    @PatchMapping("profile/changeInfo")
     @Operation(summary = "Change user info")
     public ResponseEntity<Object> changeInfo(HttpServletRequest request,@RequestBody @Valid ChangeUserInfoRequest user) {
         UserEntity userEntity = authenticationHandler.userAuthenticate(request);
@@ -84,7 +84,7 @@ public class UserController {
             return ResponseEntity.badRequest().body(ErrorResponse.error(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
         }
     }
-    @PutMapping("profile/changePhone")
+    @PatchMapping("profile/changePhone")
     @Operation(summary = "Change user phone")
     public ResponseEntity<Object> changePhone(HttpServletRequest request, @RequestBody @Valid ChangePhoneRequest user) {
         UserEntity userEntity = authenticationHandler.userAuthenticate(request);
@@ -104,7 +104,7 @@ public class UserController {
             return ResponseEntity.badRequest().body(ErrorResponse.error(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
         }
     }
-    @PutMapping("profile/changeEmail")
+    @PatchMapping("profile/changeEmail")
     @Operation(summary = "Change user email")
     public ResponseEntity<Object> changeEmail(HttpServletRequest request,@RequestBody @Valid ForgetPasswordRequest user) {
         UserEntity userEntity = authenticationHandler.userAuthenticate(request);
@@ -129,7 +129,7 @@ public class UserController {
             return ResponseEntity.badRequest().body(ErrorResponse.error(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
         }
     }
-    @PutMapping("/profile/changePassword")
+    @PatchMapping("/profile/changePassword")
     @Operation(summary = "Change user password")
     public ResponseEntity<Object> changePassword(HttpServletRequest req, @RequestBody @Valid ChangePasswordRequest request) throws BadCredentialsException{
         UserEntity user=authenticationHandler.userAuthenticate(req);
@@ -189,25 +189,7 @@ public class UserController {
        }
 
     }
-    @GetMapping("address")
-    @Operation(summary = "get user address")
-    public ResponseEntity<Object> getUserAddress(HttpServletRequest request) {
-        try {
-            UserEntity userEntity = authenticationHandler.userAuthenticate(request);
-            if(userEntity==null){
-                throw new BadCredentialsException(USER_NOT_FOUND.getMessage());
-            }
-            AddressEntity address=userEntity.getAddress();
-            HashMap<String,Object> data=new HashMap<>();
-            data.put("address",address);
-
-            return ResponseEntity.ok(new SuccessResponse(HttpStatus.OK.value(), "Get address successfully", data));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest()
-                    .body(ErrorResponse.error(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
-        }
-    }
-    @PostMapping("address/save")
+    @PostMapping("address")
     @Operation(summary = "save user address")
     public ResponseEntity<Object> saveUserAddress(HttpServletRequest request,@RequestBody @Valid InfoAddressRequest address) {
         try {
