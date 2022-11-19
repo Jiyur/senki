@@ -50,7 +50,7 @@ public class EmailServiceImpl implements EmailService {
             model.put("link",host+"?token="+jwtUtils.generateEmailJwtToken(user.getEmail()));
             String html = FreeMarkerTemplateUtils.processTemplateIntoString(template, model);
             helper = new MimeMessageHelper(message, true);
-            helper.setFrom("no-reply@baeldung.com");
+            helper.setFrom("Senki");
             helper.setTo(user.getEmail());
             helper.setSubject(subject);
             helper.setText(html,true);

@@ -19,13 +19,14 @@ public interface ProductRepository extends JpaRepository<ProductEntity, UUID>, J
             nativeQuery = true)
     Page<ProductEntity> findAllProduct(Pageable pageable, Double minPrice, Double maxPrice);
     @Query(value = "SELECT *" +
-            " FROM products p WHERE p.cate_id IN (SELECT cate_id from categories where parent_id=?1) " +
+            " FROM products p WHERE p.cate_id IN (SELECT cate_id from categories where parent_id=?1 OR cate_id=?1) " +
             "AND p.price BETWEEN ?2 AND ?3",
             countQuery = "SELECT count(*) " +
-                    "FROM products p WHERE p.cate_id IN (SELECT cate_id from categories where parent_id=?1) " +
+                    "FROM products p WHERE p.cate_id IN (SELECT cate_id from categories where parent_id=?1 OR cate_id=?1) " +
                     "AND p.price BETWEEN ?2 AND ?3",
             nativeQuery = true)
     Page<ProductEntity> findAllProductByParentId(UUID id, Pageable pageable,Double minPrice,Double maxPrice);
+//
     @Query(value = "SELECT * FROM products WHERE price BETWEEN ?2 AND ?3 AND (LOWER(name) LIKE %?1%" +
             " OR LOWER(description) LIKE %?1%)",
             countQuery = "SELECT count(*) FROM products" +

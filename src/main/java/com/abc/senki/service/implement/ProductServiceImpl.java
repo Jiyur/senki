@@ -61,6 +61,11 @@ public class ProductServiceImpl implements ProductService {
         return  pageResult.stream().toList();
     }
 
+    @Override
+    public List<ProductEntity> findAllByChild(String id, Pageable page, Double minPrice, Double maxPrice) {
+        return null;
+    }
+
 
     @Override
     public List<ProductEntity> listAll(String key, Pageable page, Double minPrice, Double maxPrice) {

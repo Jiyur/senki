@@ -75,6 +75,7 @@ public class ProductController  {
         }
     }
 
+
     private List<String> SortType(){
         List<String> list = new ArrayList<>();
         list.add("id");
@@ -89,7 +90,7 @@ public class ProductController  {
     }
 
     @GetMapping("/product-category/{id}")
-    @Operation(summary = "Get product by parent category id")
+    @Operation(summary = "Get product by  category id")
     public ResponseEntity<Object> getProductByParent(@PathVariable String id,
                                                      @RequestParam(defaultValue = "0") int page,
                                                      @RequestParam(defaultValue = "6") int size,

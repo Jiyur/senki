@@ -18,6 +18,7 @@ public interface ProductService {
     ProductEntity findById(String id);
     List<ProductEntity> findAll(Specification<ProductEntity> spec);
     List<ProductEntity> findAllByParent(String id,Pageable page,Double minPrice,Double maxPrice);
+    List<ProductEntity> findAllByChild(String id,Pageable page,Double minPrice,Double maxPrice);
 //    Page<ProductEntity> findAll(String key, int pageNo, int pageSize, String sort, Double minPrice, Double maxPrice);
     List<ProductEntity> listAll(String key, Pageable pageable, Double minPrice, Double maxPrice);
 
