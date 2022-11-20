@@ -46,7 +46,6 @@ public class AdminCategoryController {
     @PostMapping("")
     @Operation(summary = "Insert category")
     public ResponseEntity<Object> addNewCategory(@RequestBody AddNewCategoryRequest request,@RequestParam(defaultValue = "00000000-0000-0000-0000-000000000000") UUID parentId){
-
         try{
             if(Boolean.TRUE.equals(categoryService.existsByName(request.getName()))){
                 return ResponseEntity.status(HttpStatus.CONFLICT)
