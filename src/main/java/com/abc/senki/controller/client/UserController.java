@@ -11,6 +11,7 @@ import com.abc.senki.model.payload.response.ErrorResponse;
 import com.abc.senki.model.payload.response.SuccessResponse;
 import com.abc.senki.service.AddressService;
 import com.abc.senki.service.ImageStorageService;
+import com.abc.senki.service.OrderService;
 import com.abc.senki.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -47,6 +48,8 @@ public class UserController {
     AuthenticationHandler authenticationHandler;
     @Autowired
     ImageStorageService imageStorageService;
+    @Autowired
+    private OrderService orderService;
 
 
     @GetMapping("profile")
@@ -78,6 +81,25 @@ public class UserController {
                 HashMap<String,Object> data=new HashMap<>();
                 data.put("user","");
                 return ResponseEntity.ok(new SuccessResponse(HttpStatus.OK.value(),"Change profile successfully",data));
+            }
+        }
+        catch (Exception e){
+            return ResponseEntity.badRequest().body(ErrorResponse.error(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
+        }
+    }
+    @GetMapping("profile/orderList")
+    @Operation(summary = "Get all order by user")
+    public ResponseEntity<Object> getAllOrder(HttpServletRequest request){
+        UserEntity user=authenticationHandler.userAuthenticate(request);
+        try{
+            if(user==null){
+                throw new BadCredentialsException(ACCESS_TOKEN_EXPIRED.getMessage());
+            }
+            else{
+                HashMap<String,Object> data=new HashMap<>();
+                List<OrderEntity> list=orderService.getOrderByUser(user);
+                data.put("orders",list);
+                return ResponseEntity.ok(new SuccessResponse(HttpStatus.OK.value(),"Get order successfully",data));
             }
         }
         catch (Exception e){

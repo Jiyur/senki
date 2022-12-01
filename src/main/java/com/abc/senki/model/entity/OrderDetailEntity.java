@@ -1,5 +1,6 @@
 package com.abc.senki.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +21,7 @@ public class OrderDetailEntity {
     @Column(name = "\"id\"")
     private int id;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "\"order_id\"")
     private OrderEntity order;
