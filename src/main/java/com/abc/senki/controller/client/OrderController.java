@@ -89,7 +89,7 @@ public class OrderController {
             
         }
         catch (Exception e){
-            return ResponseEntity.status(400).body(e.getMessage());
+            return ResponseEntity.status(400).body(new ErrorResponse("Out of stock",HttpStatus.BAD_REQUEST.value()));
         }
     }
     @PostMapping("cod")
@@ -123,7 +123,7 @@ public class OrderController {
 
         }
         catch (Exception e){
-            return ResponseEntity.status(400).body(e.getMessage());
+            return ResponseEntity.status(400).body(new ErrorResponse("Out of stock",HttpStatus.BAD_REQUEST.value()));
         }
     }
 
