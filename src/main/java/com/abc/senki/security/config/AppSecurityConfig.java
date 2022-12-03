@@ -1,9 +1,12 @@
 package com.abc.senki.security.config;
 
 import com.abc.senki.common.UserPermission;
+import com.abc.senki.handler.OAuth2Handler;
 import com.abc.senki.security.jwt.AuthEntryPointJwt;
 import com.abc.senki.security.service.AppUserDetailService;
 import com.abc.senki.security.filter.AuthTokenFilter;
+import com.abc.senki.service.CustomOauth2Service;
+import com.abc.senki.util.CookieOAuth2RequestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,7 +32,15 @@ public class AppSecurityConfig {
     private AuthEntryPointJwt unauthorizedHandler;
     @Autowired
     AppUserDetailService userDetailsService;
+    @Autowired
+    OAuth2Handler oAuth2Handler;
+    @Autowired
+    CustomOauth2Service customOauth2Service;
 
+    @Bean
+    public CookieOAuth2RequestRepository cookieAuthorizationRequestRepository() {
+        return new CookieOAuth2RequestRepository();
+    }
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authentication) throws Exception {
         return authentication.getAuthenticationManager();
@@ -54,6 +65,17 @@ public class AppSecurityConfig {
                 .antMatchers(HttpMethod.GET,"/api/user/**").hasAnyAuthority(UserPermission.USER_READ.getPermission(),UserPermission.USER_WRITE.getPermission())
                 .antMatchers("/api/admin/**").hasAnyAuthority(UserPermission.ADMIN_READ.getPermission(),UserPermission.ADMIN_WRITE.getPermission())
                 .antMatchers("/**").permitAll()
+                .and()
+                .oauth2Login()
+                .authorizationEndpoint()
+                .baseUri("/oauth2/authorize")
+                .authorizationRequestRepository(cookieAuthorizationRequestRepository())
+                .and()
+                .userInfoEndpoint()
+                .userService(customOauth2Service)
+                .and()
+                .successHandler(oAuth2Handler);
+
         ;
 
 

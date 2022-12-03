@@ -61,16 +61,8 @@ public class OAuth2Handler extends SimpleUrlAuthenticationSuccessHandler {
         DefaultOAuth2User oauthUser = (DefaultOAuth2User) authentication.getPrincipal();
         String email = oauthUser.getAttribute("email");
         System.out.println(email);
-        String name = oauthUser.getAttribute("name");
 
-        if(userService.findByEmail(email)==null){
-            UserEntity user = new UserEntity();
-            user.setEmail(email);
-            user.setStatus(true);
-            user.setFullName(name);
 
-            userService.saveUser(user,"USER");
-        }
         String accessToken = jwtUtils.generateEmailJwtToken(email);
         return UriComponentsBuilder.fromUriString(targetUrl)
                 .queryParam("token", accessToken)
