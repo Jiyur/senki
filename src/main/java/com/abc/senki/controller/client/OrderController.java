@@ -50,7 +50,33 @@ public class OrderController {
     PaypalService paypalService;
     @Autowired
     OrderService orderService;
+    @PostMapping("/paypal/{id}")
+    @Operation(summary = "Get paypal payment link")
+    public ResponseEntity<Object> paypalLinkGenerate(HttpServletRequest request,@PathVariable UUID id){
+        try{
+            UserEntity user=authenticationHandler.userAuthenticate(request);
+            if(user==null){
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(new ErrorResponse("Unauthorized",HttpStatus.UNAUTHORIZED.value()));
+            }
+            OrderEntity order=orderService.getOrderById(id);
+            if(order.getUser().equals(user)&&order.getMethod().toString().equals("PAYPAL")){
+                String link=paypalService.paypalPayment(order,request);
+               if(link!=null){
+                   HashMap<String,Object> data=new HashMap<>();
+                   data.put("link",link);
+                   return ResponseEntity
+                           .ok(new SuccessResponse(HttpStatus.OK.value(),"Generate success",data));
+               }
 
+            }
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ErrorResponse("Cannot create payment",HttpStatus.BAD_REQUEST.value()));
+        }
+        catch (Exception e){
+            return ResponseEntity.badRequest().body(new ErrorResponse("Failed to generate link",HttpStatus.BAD_REQUEST.value()));
+        }
+    }
     @PostMapping("paypal")
     @Operation(summary = "Add PAYPAL order")
     public ResponseEntity<Object> addPayPalOrder(HttpServletRequest request,@RequestBody List<CartItemList> cartList){
