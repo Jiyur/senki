@@ -22,7 +22,7 @@ public class OrderDetailEntity {
     private int id;
 
     @JsonBackReference
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL,optional = true,fetch = FetchType.LAZY)
     @JoinColumn(name = "\"order_id\"")
     private OrderEntity order;
 

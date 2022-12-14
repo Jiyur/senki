@@ -31,8 +31,7 @@ public class OrderEntity {
     @JoinColumn(name="\"user_id\"")
     private UserEntity user;
 
-    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-    @JoinColumn(name="\"order_id\"")
+    @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL,mappedBy = "order")
     private List<OrderDetailEntity> orderDetails;
 
 
