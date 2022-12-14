@@ -118,6 +118,34 @@ public class OrderController {
             return ResponseEntity.status(400).body(new ErrorResponse("Out of stock",HttpStatus.BAD_REQUEST.value()));
         }
     }
+    @GetMapping("{id}")
+    @Operation(summary = "Get order by id")
+    public ResponseEntity<Object> getOrderDetailById(@PathVariable UUID id,HttpServletRequest request){
+        try{
+            UserEntity user=authenticationHandler.userAuthenticate(request);
+            if(user==null){
+                return ResponseEntity.badRequest()
+                        .body(new ErrorResponse("User not found", HttpStatus.BAD_REQUEST.value()));
+            }
+            OrderEntity order=orderService.getOrderById(id);
+            if(order==null){
+                return ResponseEntity.badRequest()
+                        .body(new ErrorResponse("Order not found", HttpStatus.BAD_REQUEST.value()));
+            }
+            if(!order.getUser().getId().equals(user.getId())){
+                return ResponseEntity.badRequest()
+                        .body(new ErrorResponse("Order not found", HttpStatus.BAD_REQUEST.value()));
+            }
+            HashMap<String,Object> data=new HashMap<>();
+            data.put("order",order);
+            return ResponseEntity.ok(new SuccessResponse(HttpStatus.OK.value(),"Get order success",data));
+        }
+        catch (Exception e){
+            return ResponseEntity.badRequest()
+                    .body(new ErrorResponse("Can't get the specificed order", HttpStatus.BAD_REQUEST.value()));
+        }
+    }
+
     @PostMapping("cod")
     @Operation(summary = "Add COD order")
     public ResponseEntity<Object> addCODOrder(HttpServletRequest request,
