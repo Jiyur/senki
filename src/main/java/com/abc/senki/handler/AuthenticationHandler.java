@@ -1,6 +1,7 @@
 package com.abc.senki.handler;
 
 import com.abc.senki.model.entity.UserEntity;
+import com.abc.senki.security.dto.AppUserDetail;
 import com.abc.senki.security.jwt.JwtUtils;
 import com.abc.senki.service.UserService;
 
@@ -33,5 +34,11 @@ public class AuthenticationHandler {
             return userService.findById(UUID.fromString(jwtUtils.getUserNameFromJwtToken(accessToken)));
         }
         return null;
+    }
+    public AppUserDetail refreshAuthenticate(String refreshToken){
+        if(jwtUtils.validateExpiredToken(refreshToken)){
+            throw new BadCredentialsException("refresh token is  expired");
+        }
+        return AppUserDetail.build(userService.findById(UUID.fromString(jwtUtils.getUserNameFromJwtToken(refreshToken))));
     }
 }

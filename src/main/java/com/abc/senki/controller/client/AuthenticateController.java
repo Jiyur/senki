@@ -1,9 +1,11 @@
 package com.abc.senki.controller.client;
 
+import com.abc.senki.handler.AuthenticationHandler;
 import com.abc.senki.handler.HttpMessageNotReadableException;
 import com.abc.senki.handler.MethodArgumentNotValidException;
 import com.abc.senki.handler.RecordNotFoundException;
 import com.abc.senki.model.entity.UserEntity;
+import com.abc.senki.model.payload.request.AuthenticationRequest.RefreshTokenRequest;
 import com.abc.senki.model.payload.request.UserRequest.AddNewUserRequest;
 import com.abc.senki.model.payload.request.UserRequest.ForgetPasswordRequest;
 import com.abc.senki.model.payload.request.UserRequest.UserLoginRequest;
@@ -29,10 +31,12 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.UUID;
 
 import static com.abc.senki.common.ErrorDefinition.ERROR_TRY_AGAIN;
 
@@ -49,12 +53,48 @@ public class AuthenticateController {
     @Autowired
     private AuthenticationManager authenticationManager;
     @Autowired
+    AuthenticationHandler authenticationHandler;
+    @Autowired
     private JwtUtils jwtUtils;
     @Autowired
     private ModelMapper mapper;
     @Autowired
     private EmailService emailService;
+    @PostMapping("refreshToken")
+    @Operation(summary = "Refresh token")
+    public ResponseEntity<Object> refreshToken(@RequestBody RefreshTokenRequest refreshToken
+            , HttpServletResponse response, HttpServletRequest request) {
+        try {
+           String accessToken=request.getHeader("Authorization").substring("Bearer ".length());
+           if(!jwtUtils.validateExpiredToken(accessToken)){
+               return ResponseEntity.badRequest()
+                       .body(ErrorResponse.error("Token is not expired", HttpStatus.BAD_REQUEST.value()));
+           }
+           if(jwtUtils.validateExpiredToken(refreshToken.getRefreshToken())){
+               return ResponseEntity.badRequest()
+                       .body(ErrorResponse.error("Refresh token is expired", HttpStatus.BAD_REQUEST.value()));
+           }
+           if(refreshToken==null){
+               return ResponseEntity.badRequest()
+                       .body(ErrorResponse.error("Refresh token is missing", HttpStatus.BAD_REQUEST.value()));
+           }
+            AppUserDetail userDetails = authenticationHandler
+                    .refreshAuthenticate(refreshToken.getRefreshToken());
+            accessToken=generateActiveToken(userDetails);
+            Cookie cookie = new Cookie(ACCESS_TOKEN, accessToken);
 
+            response.setHeader("Set-Cookie", "test=value; Path=/");
+            response.addCookie(cookie);
+            HashMap<String,Object> data=new HashMap<>();
+            data.put("accessToken",accessToken);
+            data.put("refreshToken",refreshToken.getRefreshToken());
+
+            return ResponseEntity.ok(new SuccessResponse(HttpStatus.OK.value(), "Refresh token successfully",data));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ErrorResponse.error(e.getMessage(), HttpStatus.UNAUTHORIZED.value()));
+
+        }
+    }
     @PostMapping("register")
     @Operation(summary = "Register new user")
     public ResponseEntity<Object> register(@RequestBody @Valid AddNewUserRequest request) {
