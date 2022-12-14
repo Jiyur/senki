@@ -62,7 +62,7 @@ public class AppSecurityConfig {
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler);
         http
                 .authorizeRequests()
-                .antMatchers(HttpMethod.GET,"/api/user/**").hasAnyAuthority(UserPermission.USER_READ.getPermission(),UserPermission.USER_WRITE.getPermission())
+                .antMatchers("/api/user/**").hasAnyAuthority(UserPermission.USER_READ.getPermission(),UserPermission.USER_WRITE.getPermission())
                 .antMatchers("/api/admin/**").hasAnyAuthority(UserPermission.ADMIN_READ.getPermission(),UserPermission.ADMIN_WRITE.getPermission())
                 .antMatchers("/**").permitAll()
                 .and()
