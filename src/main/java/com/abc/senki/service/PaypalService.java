@@ -18,6 +18,7 @@ import java.util.List;
 public class PaypalService {
     public static final String SUCCESS_URL = "/api/order/pay/success/";
     public static final String CANCEL_URL = "/api/order/pay/cancel/";
+    public static final String HOST="https://senki.me";
     @Autowired
     private APIContext apiContext;
 
@@ -71,8 +72,8 @@ public class PaypalService {
 
         try {
             Payment payment = createPayment(order, "USD", "paypal", "sale",
-                    request.getHeader("origin")+CANCEL_URL+order.getId().toString(),
-                    request.getHeader("origin")+SUCCESS_URL+order.getId().toString());
+                    HOST+CANCEL_URL+order.getId().toString(),
+                    HOST+SUCCESS_URL+order.getId().toString());
             for(Links link:payment.getLinks()){
                 if(link.getRel().equals("approval_url")){
                     return link.getHref();
