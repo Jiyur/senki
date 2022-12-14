@@ -168,6 +168,7 @@ public class OrderController {
                 //Process order if payment success
                 data.put("orderId",id);
                 response.sendRedirect("http://localhost:3000/paypal/success?orderId="+id);
+                return ResponseEntity.ok(new SuccessResponse(HttpStatus.OK.value(),"Payment success",data));
             }
         }
         catch (PayPalRESTException e){
