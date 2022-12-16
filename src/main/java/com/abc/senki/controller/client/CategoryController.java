@@ -37,5 +37,19 @@ public class CategoryController {
                     .body(ErrorResponse.error(ERROR_TRY_AGAIN.getMessage(), HttpStatus.BAD_REQUEST.value()));
         }
     }
+    @GetMapping("parent")
+    @Operation(summary = "get all parent category")
+    public ResponseEntity<Object> getAllParentCategory() {
+        try{
+            HashMap<String,Object> data=new HashMap<>();
+            data.put("category",categoryService.findAllParent());
+            return ResponseEntity
+                    .ok(new SuccessResponse(HttpStatus.OK.value(),"Get all category successfully", data));
+        }
+        catch (Exception e){
+            return ResponseEntity.badRequest()
+                    .body(ErrorResponse.error(ERROR_TRY_AGAIN.getMessage(), HttpStatus.BAD_REQUEST.value()));
+        }
+    }
 
 }

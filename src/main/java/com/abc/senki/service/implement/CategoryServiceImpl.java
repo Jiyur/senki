@@ -39,6 +39,11 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    public List<CategoryEntity> findAllParent() {
+        return categoryRepository.findDistinctBySubCategoriesNotNull();
+    }
+
+    @Override
     public Boolean existsByName(String name) {
         return categoryRepository.existsByName(name);
     }

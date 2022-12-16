@@ -13,6 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 import static com.abc.senki.common.SortingEnum.*;
@@ -28,13 +30,16 @@ class SenkiApplicationTests {
     }
     @Test
     void test() {
-        ProductSpecification spec1=new ProductSpecification(new SearchCriteria("price",">",0));
-        ProductSpecification spec2=new ProductSpecification(new SearchCriteria("price","<",1000000));
-        Pageable page =createPageRequest(0, 10, price_asc.getSort());
-        Page<ProductEntity> list=productRepository.findAll(spec1.and(spec2),page);
-        for(ProductEntity productEntity:list){
-            System.out.println(productEntity.getName());
-        }
+//        ProductSpecification spec1=new ProductSpecification(new SearchCriteria("price",">",0));
+//        ProductSpecification spec2=new ProductSpecification(new SearchCriteria("price","<",1000000));
+//        Pageable page =createPageRequest(0, 10, price_asc.getSort());
+//        Page<ProductEntity> list=productRepository.findAll(spec1.and(spec2),page);
+//        for(ProductEntity productEntity:list){
+//            System.out.println(productEntity.getName());
+//        }
+        LocalDateTime now=LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"));
+        LocalDateTime now1=LocalDateTime.now();
+        System.out.println(now1);
 
     }
     public Pageable createPageRequest(int pageNo, int pageSize, String sort) {

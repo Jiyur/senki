@@ -13,5 +13,6 @@ public interface CategoryService {
     void saveCategory(CategoryEntity category);
     CategoryEntity findById(String cateId);
     List<CategoryEntity> findAll();
+    List<CategoryEntity> findAllParent();
     Boolean existsByName(String name);
 }

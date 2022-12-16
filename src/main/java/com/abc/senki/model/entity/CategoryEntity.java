@@ -32,6 +32,7 @@ public class CategoryEntity  {
     private String name;
 
     @OneToMany(mappedBy = "productCategory",cascade = CascadeType.ALL)
+    @JsonBackReference
     private List<ProductEntity> listProduct;
 
     @JsonBackReference
@@ -39,7 +40,7 @@ public class CategoryEntity  {
     @JoinColumn(name="\"parent_id\"",referencedColumnName="\"cate_id\"")
     private CategoryEntity parent;
 
-    @OneToMany(mappedBy = "parent",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "parent",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private Collection<CategoryEntity> subCategories;
 
 
