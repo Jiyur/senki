@@ -35,6 +35,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -101,7 +102,7 @@ public class AuthenticateController {
         request.setPassword(encoder.encode(request.getPassword()));
 
         UserEntity userEntity = mapper.map(request, UserEntity.class);
-        userEntity.setCreateAt(LocalDateTime.now());
+        userEntity.setCreateAt(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
 
         if (Boolean.TRUE.equals(userService.existsByEmail(userEntity.getEmail()))) {
             return ResponseEntity.badRequest()

@@ -8,6 +8,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.UUID;
 import static com.abc.senki.common.OrderStatus.*;
@@ -47,7 +48,7 @@ public class OrderEntity {
         this.id = UUID.randomUUID();
         this.user = user;
         this.status=PENDING.getMesssage();
-        this.createdAt = LocalDateTime.now();
+        this.createdAt = LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"));
         this.address = user.getAddress();
         this.total=0.0;
         this.shipFee=15000.0;
