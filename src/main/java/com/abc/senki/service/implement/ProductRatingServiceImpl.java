@@ -5,6 +5,7 @@ import com.abc.senki.repositories.ProductRatingRepository;
 import com.abc.senki.service.ProductRatingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,11 @@ public class ProductRatingServiceImpl implements ProductRatingService {
     @Override
     public List<ProductRatingEntity> getRatingByProductId(String productId) {
         return productRatingRepository.findByProductId(UUID.fromString(productId));
+    }
+
+    @Override
+    public List<ProductRatingEntity> getRatingByProductId(String productId, Pageable pageable) {
+        return productRatingRepository.findDistinctByProductId(UUID.fromString(productId),pageable);
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.abc.senki.repositories;
 
 import com.abc.senki.model.entity.OrderEntity;
 import com.abc.senki.model.entity.UserEntity;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -14,5 +15,6 @@ public interface OrderRepository extends JpaRepository<OrderEntity,UUID> {
     Optional<OrderEntity> findByUserAndStatus(UserEntity user, String status);
     @Query(value="select distinct * from orders o where o.user_id = ?1",nativeQuery = true)
     List<OrderEntity> getThing(UUID id);
+    List<OrderEntity> findDistinctByUser(UserEntity user, Pageable pageable);
 
 }

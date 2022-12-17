@@ -17,6 +17,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -89,15 +92,18 @@ public class UserController {
     }
     @GetMapping("profile/orderList")
     @Operation(summary = "Get all order by user")
-    public ResponseEntity<Object> getAllOrder(HttpServletRequest request){
+    public ResponseEntity<Object> getAllOrder(HttpServletRequest request,
+                                              @RequestParam(defaultValue = "0") int page,
+                                              @RequestParam(defaultValue = "6") int size){
         UserEntity user=authenticationHandler.userAuthenticate(request);
         try{
             if(user==null){
                 throw new BadCredentialsException(ACCESS_TOKEN_EXPIRED.getMessage());
             }
             else{
+                Pageable pageable= PageRequest.of(page,size, Sort.by("createdAt").descending());
                 HashMap<String,Object> data=new HashMap<>();
-                List<OrderEntity> list=orderService.getOrderByUser(user);
+                List<OrderEntity> list=orderService.getOrderByUser(user,pageable);
                 data.put("orders",list);
                 return ResponseEntity.ok(new SuccessResponse(HttpStatus.OK.value(),"Get order successfully",data));
             }

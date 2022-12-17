@@ -5,6 +5,7 @@ import com.abc.senki.repositories.OrderRepository;
 import com.abc.senki.service.CartService;
 import com.abc.senki.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -34,6 +35,11 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<OrderEntity> getOrderByUser(UserEntity user) {
         return orderRepository.getThing(user.getId()).stream().toList();
+    }
+
+    @Override
+    public List<OrderEntity> getOrderByUser(UserEntity user, Pageable pageable) {
+        return orderRepository.findDistinctByUser(user, pageable).stream().toList();
     }
 
     @Override

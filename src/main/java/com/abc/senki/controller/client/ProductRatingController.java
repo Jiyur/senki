@@ -21,6 +21,9 @@ import org.checkerframework.checker.units.qual.A;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -92,14 +95,17 @@ public class ProductRatingController {
     }
     @GetMapping("{productId}/product")
     @Operation(summary = "Get all rating for product")
-    public ResponseEntity<Object> getAllRating(@PathVariable String productId){
+    public ResponseEntity<Object> getAllRating(@PathVariable String productId,
+                                               @RequestParam(defaultValue = "0") int page,
+                                               @RequestParam(defaultValue = "5") int size){
         try{
             if(productId==null){
                 return ResponseEntity.badRequest()
                         .body(ErrorResponse.error(PRODUCT_NOT_FOUND.getMessage(),HttpStatus.BAD_REQUEST.value()));
             }
+            Pageable pageable= PageRequest.of(page,size, Sort.by("createdAt").descending());
             Map<String,Object> data=new HashMap<>();
-            data.put("rating",productRatingService.getRatingByProductId(productId));
+            data.put("rating",productRatingService.getRatingByProductId(productId,pageable));
             return ResponseEntity.ok(new SuccessResponse(HttpStatus.OK.value(), "Get all rating successful",data));
         }
         catch (Exception e){
