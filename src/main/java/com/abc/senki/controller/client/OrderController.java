@@ -91,6 +91,7 @@ public class OrderController {
             //Set order address
             AddressEntity address=user.getAddress();
             address.setId(UUID.randomUUID().toString());
+            address.setUser(null);
             order.setAddress(address);
 
             if(order.getAddress()==null){
@@ -164,6 +165,7 @@ public class OrderController {
             //Set order address
             AddressEntity address=user.getAddress();
             address.setId(UUID.randomUUID().toString());
+            address.setUser(null);
             order.setAddress(address);
             if(order.getAddress()==null){
                 return ResponseEntity.badRequest()
