@@ -89,9 +89,19 @@ public class OrderController {
 
             OrderEntity order=new OrderEntity(user);
             //Set order address
-            AddressEntity address=user.getAddress();
+            AddressEntity address=null;
+            address.setDistrict(user.getAddress().getDistrict());
+            address.setProvince(user.getAddress().getProvince());
+            address.setCommune(user.getAddress().getCommune());
+            address.setInfo(
+                    user.getAddress().getFullName(),
+                    user.getAddress().getCompanyName(),
+                    user.getAddress().getPhoneNumber(),
+                    user.getAddress().getAddressDetail(),
+                    null
+
+            );
             address.setId(null);
-            address.setUser(null);
             order.setAddress(address);
 
             if(order.getAddress()==null){
