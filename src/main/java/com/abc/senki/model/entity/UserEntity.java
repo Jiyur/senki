@@ -55,7 +55,7 @@ public class UserEntity {
     @Column(name = "\"create_at\"")
     private LocalDateTime createAt;
 
-    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private AddressEntity address;
 
     @JsonIgnore
