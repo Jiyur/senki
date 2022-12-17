@@ -251,7 +251,8 @@ public class UserController {
                     ,address.getAddressDetail()
                     ,userEntity);
             addressEntity.setId(UUID.randomUUID().toString());
-            addressService.saveAddress(addressEntity);
+            userEntity.setAddress((addressEntity));
+            userService.saveInfo(userEntity);
 
             return ResponseEntity.ok(new SuccessResponse(HttpStatus.OK.value(), "Save address successfully", null));
         } catch (Exception e) {
