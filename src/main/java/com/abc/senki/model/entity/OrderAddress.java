@@ -1,6 +1,5 @@
 package com.abc.senki.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,12 +11,11 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "\"addresses\"")
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class AddressEntity {
+@NoArgsConstructor
+public class OrderAddress {
     @Id
     @GeneratedValue(
             generator = "UUID"
@@ -57,19 +55,19 @@ public class AddressEntity {
     @Column(name="\"address_detail\"")
     private String addressDetail;
 
-    @JsonIgnore
-    @OneToOne
-    @JoinColumn(name = "\"user\"")
-    private UserEntity user;
+    @OneToMany(mappedBy = "address",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    private List<OrderEntity> orders;
 
-
-
-    public void setInfo(String fullName,String companyName,String phoneNumber,String addressDetail,UserEntity user){
+    public void setInfo(String fullName, String companyName, String phoneNumber, ProvinceEntity province, DistrictEntity district, CommuneEntity commune, String addressDetail) {
         this.fullName = fullName;
         this.companyName = companyName;
         this.phoneNumber = phoneNumber;
+        this.province = province;
+        this.district = district;
+        this.commune = commune;
         this.addressDetail = addressDetail;
-        this.user = user;
     }
 
 }
+
+

@@ -26,7 +26,7 @@ public class OrderEntity {
 
     @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @JoinColumn(name="\"address_id\"")
-    private AddressEntity address;
+    private OrderAddress address;
 
     @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @JoinColumn(name="\"user_id\"")
@@ -34,6 +34,8 @@ public class OrderEntity {
 
     @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL,mappedBy = "order")
     private List<OrderDetailEntity> orderDetails;
+
+
 
 
     private String status;
@@ -49,7 +51,6 @@ public class OrderEntity {
         this.user = user;
         this.status=PENDING.getMesssage();
         this.createdAt = LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"));
-        this.address = user.getAddress();
         this.total=0.0;
         this.shipFee=15000.0;
     }
