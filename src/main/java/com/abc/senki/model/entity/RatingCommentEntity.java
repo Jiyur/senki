@@ -37,7 +37,6 @@ public class RatingCommentEntity {
     @JoinColumn(name = "\"product_rating_id\"")
     private ProductRatingEntity productRating;
 
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "\"user_id\"")
     private UserEntity user;

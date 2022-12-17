@@ -1,5 +1,6 @@
 package com.abc.senki.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
@@ -58,7 +59,7 @@ public class UserEntity {
     @OneToOne(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private AddressEntity address;
 
-    @JsonIgnore
+    @JsonBackReference
     @OneToMany(mappedBy = "user",targetEntity = ProductRatingEntity.class,fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private List<ProductRatingEntity> productRating;
 

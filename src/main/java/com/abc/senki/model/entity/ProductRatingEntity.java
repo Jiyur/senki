@@ -42,7 +42,6 @@ public class ProductRatingEntity {
     @JoinColumn(name = "\"product_id\"")
     private ProductEntity product;
 
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name ="\"user_id\"")
     private UserEntity user;
