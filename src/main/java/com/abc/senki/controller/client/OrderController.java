@@ -89,7 +89,9 @@ public class OrderController {
 
             OrderEntity order=new OrderEntity(user);
             //Set order address
-            order.setAddress(user.getAddress());
+            AddressEntity address=user.getAddress();
+            address.setId(UUID.randomUUID().toString());
+            order.setAddress(address);
 
             if(order.getAddress()==null){
                 return ResponseEntity.badRequest()
