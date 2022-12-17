@@ -18,14 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AddressEntity {
-    @Id
-    @GeneratedValue(
-            generator = "UUID"
-    )
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator"
-    )
+
     @Column(name = "\"id\"")
     private String id;
 
