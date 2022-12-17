@@ -90,7 +90,7 @@ public class OrderController {
             OrderEntity order=new OrderEntity(user);
             //Set order address
             AddressEntity address=user.getAddress();
-            address.setId(UUID.randomUUID().toString());
+            address.setId(null);
             address.setUser(null);
             order.setAddress(address);
 
