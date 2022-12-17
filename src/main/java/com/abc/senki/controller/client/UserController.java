@@ -249,10 +249,11 @@ public class UserController {
                     ,address.getCompanyName()
                     ,address.getPhone()
                     ,address.getAddressDetail()
-                    ,userEntity);
-            addressEntity.setId(UUID.randomUUID().toString());
+                    ,null);
             userEntity.setAddress(null);
             userService.saveInfo(userEntity);
+            addressEntity.setId(UUID.randomUUID().toString());
+            addressEntity.setUser(userEntity);
             addressService.saveAddress(addressEntity);
 
 
