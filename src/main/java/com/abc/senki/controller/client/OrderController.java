@@ -127,7 +127,7 @@ public class OrderController {
             
         }
         catch (Exception e){
-            return ResponseEntity.status(400).body(new ErrorResponse("Out of stock",HttpStatus.BAD_REQUEST.value()));
+            return ResponseEntity.status(400).body(new ErrorResponse(e.getMessage(),HttpStatus.BAD_REQUEST.value()));
         }
     }
     @GetMapping("{id}")
@@ -200,7 +200,7 @@ public class OrderController {
 
         }
         catch (Exception e){
-            return ResponseEntity.status(400).body(new ErrorResponse("Out of stock",HttpStatus.BAD_REQUEST.value()));
+            return ResponseEntity.status(400).body(new ErrorResponse(e.getMessage(),HttpStatus.BAD_REQUEST.value()));
         }
     }
 
