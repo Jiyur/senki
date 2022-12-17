@@ -29,7 +29,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
 
 import static com.abc.senki.common.ErrorDefinition.*;
 
@@ -250,7 +249,6 @@ public class UserController {
                     ,address.getPhone()
                     ,address.getAddressDetail()
                     ,userEntity);
-            addressEntity.setId(UUID.randomUUID().toString());
             addressService.saveAddress(addressEntity);
 
             return ResponseEntity.ok(new SuccessResponse(HttpStatus.OK.value(), "Save address successfully", null));

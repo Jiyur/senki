@@ -18,7 +18,14 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AddressEntity {
-
+    @Id
+    @GeneratedValue(
+            generator = "UUID"
+    )
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
     @Column(name = "\"id\"")
     private String id;
 
@@ -56,7 +63,7 @@ public class AddressEntity {
     private UserEntity user;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "address",targetEntity =OrderEntity.class ,cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "address",targetEntity =OrderEntity.class ,cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private List<OrderEntity> order;
 
     public void setInfo(String fullName,String companyName,String phoneNumber,String addressDetail,UserEntity user){
