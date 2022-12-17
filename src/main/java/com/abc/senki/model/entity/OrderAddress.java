@@ -1,5 +1,6 @@
 package com.abc.senki.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -55,6 +56,7 @@ public class OrderAddress {
     @Column(name="\"address_detail\"")
     private String addressDetail;
 
+    @JsonBackReference
     @OneToMany(mappedBy = "address",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<OrderEntity> orders;
 

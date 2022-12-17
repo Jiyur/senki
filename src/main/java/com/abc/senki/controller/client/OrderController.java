@@ -172,7 +172,7 @@ public class OrderController {
 
             OrderEntity order=new OrderEntity(user);
             //Set order address
-            OrderAddress address=null;
+            OrderAddress address=new OrderAddress();
             address.setDistrict(user.getAddress().getDistrict());
             address.setProvince(user.getAddress().getProvince());
             address.setCommune(user.getAddress().getCommune());
