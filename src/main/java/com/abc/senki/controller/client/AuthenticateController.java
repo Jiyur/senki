@@ -6,6 +6,7 @@ import com.abc.senki.handler.MethodArgumentNotValidException;
 import com.abc.senki.handler.RecordNotFoundException;
 import com.abc.senki.model.entity.UserEntity;
 import com.abc.senki.model.payload.request.AuthenticationRequest.RefreshTokenRequest;
+import com.abc.senki.model.payload.request.AuthenticationRequest.ResetPasswordRequest;
 import com.abc.senki.model.payload.request.UserRequest.AddNewUserRequest;
 import com.abc.senki.model.payload.request.UserRequest.ForgetPasswordRequest;
 import com.abc.senki.model.payload.request.UserRequest.UserLoginRequest;
@@ -182,10 +183,44 @@ public class AuthenticateController {
                     .body(ErrorResponse.error(ERROR_TRY_AGAIN.getMessage(), HttpStatus.BAD_REQUEST.value()));
         }
     }
+    @PostMapping("/resetPassword")
+    @Operation(summary = "Reset password")
+    public ResponseEntity<Object> resetPassword(@RequestBody @Valid ResetPasswordRequest request) {
+       try{
+           if(request.getToken()==null||request.getToken().equals("")){
+               return ResponseEntity.badRequest()
+                       .body(ErrorResponse.error("Token is missing", HttpStatus.BAD_REQUEST.value()));
+           }
+           if(request.getPassword()==null||request.getPassword().equals("")){
+               return ResponseEntity.badRequest()
+                       .body(ErrorResponse.error("Password is missing", HttpStatus.BAD_REQUEST.value()));
+           }
+           if(!request.getConfirmPassword().equals(request.getPassword())){
+                return ResponseEntity.badRequest()
+                          .body(ErrorResponse.error("Confirm password is not match", HttpStatus.BAD_REQUEST.value()));
+           }
+           if(request.getPassword().equals(request.getConfirmPassword())){
+               String email=jwtUtils.getUserNameFromJwtToken(request.getToken());
+               UserEntity user=userService.findByEmail(email);
+               user.setPassword(encoder.encode(request.getPassword()));
+               userService.saveInfo(user);
+               return ResponseEntity.ok(new SuccessResponse(HttpStatus.OK.value(), "Reset password successfully",null));
+           }
+              return ResponseEntity.badRequest()
+                     .body(ErrorResponse.error("Reset password failed", HttpStatus.BAD_REQUEST.value()));
+
+       }
+       catch (Exception e){
+              return ResponseEntity.badRequest()
+                     .body(ErrorResponse.error("Your submition failed, please try again later", HttpStatus.BAD_REQUEST.value()));
+
+       }
+    }
 
     @PostMapping("/forgetPassword")
     @Operation(summary = "Restore password by email")
-    public ResponseEntity<Object> forgetPassword(@RequestBody @Valid ForgetPasswordRequest request, BindingResult errors) throws MethodArgumentNotValidException {
+    public ResponseEntity<Object> forgetPassword(@RequestBody @Valid ForgetPasswordRequest request, BindingResult errors,
+                                                 HttpServletRequest req) throws MethodArgumentNotValidException {
         try {
             if (errors.hasErrors()) {
                 throw new MethodArgumentNotValidException(errors);
@@ -197,7 +232,7 @@ public class AuthenticateController {
                 throw new HttpMessageNotReadableException("Email is not Registered");
             }
             UserEntity user = userService.findByEmail(request.getEmail());
-            emailService.sendForgetPasswordMessage(user);
+            emailService.sendForgetPasswordMessage(req.getHeader("Origin"),user);
             HashMap<String, Object> data = new HashMap<>();
             data.put("email", user.getEmail());
             return ResponseEntity.ok(new SuccessResponse(HttpStatus.OK.value(), "Email sent successfully", data));

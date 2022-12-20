@@ -37,7 +37,7 @@ public class EmailServiceImpl implements EmailService {
 
 
     @Override
-    public void sendForgetPasswordMessage(UserEntity user) {
+    public void sendForgetPasswordMessage(String host,UserEntity user) {
         MimeMessage message = javaMailSender.createMimeMessage();
         String subject = "Reset password";
         try {
@@ -47,7 +47,7 @@ public class EmailServiceImpl implements EmailService {
             Template template= config.getTemplate("email-temp.ftl");
             Map<String, Object> model=new HashMap<>();
             model.put("fullName",user.getFullName());
-            model.put("link",host+"?token="+jwtUtils.generateEmailJwtToken(user.getEmail()));
+            model.put("link",host+"token="+jwtUtils.generateEmailJwtToken(user.getEmail()));
             String html = FreeMarkerTemplateUtils.processTemplateIntoString(template, model);
             helper = new MimeMessageHelper(message, true);
             helper.setFrom("Senki");
