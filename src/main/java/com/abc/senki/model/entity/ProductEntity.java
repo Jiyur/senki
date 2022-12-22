@@ -42,7 +42,6 @@ public class ProductEntity  {
     @OneToMany(mappedBy = "product",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<ImageProductEntity> imageList;
 
-    @JsonBackReference
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "\"cate_id\"")
     private CategoryEntity productCategory;

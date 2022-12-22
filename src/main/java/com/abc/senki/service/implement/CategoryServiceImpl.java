@@ -27,10 +27,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryEntity findById(String cateId) {
         Optional<CategoryEntity> categoryEntity = categoryRepository.findById(UUID.fromString(cateId));
-        if (categoryEntity.isEmpty()) {
-            return null;
-        }
-        return categoryEntity.get();
+        return categoryEntity.orElse(null);
     }
 
     @Override
