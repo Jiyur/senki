@@ -48,6 +48,11 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public List<OrderEntity> getAllOrder(Pageable pageable) {
+        return orderRepository.findAll(pageable).stream().toList();
+    }
+
+    @Override
     public void deleteOrderById(UUID id) {
         orderRepository.deleteById(id);
     }
@@ -55,7 +60,6 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void updateOrderStatus(UUID id, String status) {
         OrderEntity order = orderRepository.findById(id).orElse(null);
-        assert order != null;
         order.setStatus(status);
         orderRepository.save(order);
     }

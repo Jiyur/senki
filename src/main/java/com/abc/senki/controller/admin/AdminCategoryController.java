@@ -2,6 +2,7 @@ package com.abc.senki.controller.admin;
 
 import com.abc.senki.model.entity.CategoryEntity;
 import com.abc.senki.model.payload.request.CategoryRequest.AddNewCategoryRequest;
+import com.abc.senki.model.payload.request.CategoryRequest.EditCateRequest;
 import com.abc.senki.model.payload.response.ErrorResponse;
 import com.abc.senki.model.payload.response.SuccessResponse;
 import com.abc.senki.service.CategoryService;
@@ -66,6 +67,30 @@ public class AdminCategoryController {
                 return ResponseEntity.status(HttpStatus.CONFLICT)
                         .body(ErrorResponse.error("Parent category not found", HttpStatus.CONFLICT.value()));
             }
+        }
+        catch (Exception e){
+            return ResponseEntity.badRequest()
+                    .body(ErrorResponse.error(ERROR_TRY_AGAIN.getMessage(), HttpStatus.BAD_REQUEST.value()));
+        }
+    }
+    @PutMapping("{id}")
+    @Operation(summary = "Update category")
+    public ResponseEntity<Object> updateCategory(@PathVariable UUID id, @RequestBody EditCateRequest editCateRequest){
+        try{
+            CategoryEntity category=categoryService.findById(id.toString());
+            if(category==null){
+                return ResponseEntity.badRequest()
+                        .body(ErrorResponse.error(ERROR_TRY_AGAIN.getMessage(), HttpStatus.BAD_REQUEST.value()));
+            }
+            if(!editCateRequest.getParentCateId().toString().isEmpty()){
+                category.setParent(categoryService.findById(editCateRequest.getParentCateId().toString()));
+            }
+            if(editCateRequest.getName()!=null){
+                category.setName(editCateRequest.getName());
+            }
+            categoryService.saveCategory(category);
+            return ResponseEntity
+                    .ok(new SuccessResponse(HttpStatus.OK.value(),"Update category successfully", null));
         }
         catch (Exception e){
             return ResponseEntity.badRequest()

@@ -18,6 +18,8 @@ public interface OrderService  {
     List<OrderEntity> getOrderByUser(UserEntity user, Pageable pageable);
     List<OrderEntity> getOrderByStatus(String status);
     List<OrderEntity> getOrderByUserAndStatus(UserEntity user, String status);
+
+    List<OrderEntity> getAllOrder(Pageable pageable);
     void deleteOrderById(UUID id);
     void updateOrderStatus(UUID id, String status);
 }
