@@ -1,6 +1,5 @@
 package com.abc.senki.service;
 
-import com.abc.senki.model.entity.CartEntity;
 import com.abc.senki.model.entity.OrderEntity;
 import com.abc.senki.model.entity.UserEntity;
 import org.springframework.data.domain.Pageable;

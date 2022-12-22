@@ -2,34 +2,25 @@ package com.abc.senki.controller.client;
 
 import com.abc.senki.handler.AuthenticationHandler;
 import com.abc.senki.model.entity.*;
-import com.abc.senki.model.payload.request.OrderRequest.AddOrderRequest;
 import com.abc.senki.model.payload.request.OrderRequest.CartItemList;
 import com.abc.senki.model.payload.response.ErrorResponse;
 import com.abc.senki.model.payload.response.SuccessResponse;
 import com.abc.senki.service.OrderService;
 import com.abc.senki.service.PaypalService;
 import com.abc.senki.service.UserService;
-import com.paypal.api.payments.Order;
 import com.paypal.api.payments.Payment;
 import com.paypal.base.rest.PayPalRESTException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import org.apache.coyote.Response;
-import org.hibernate.engine.jdbc.spi.SqlExceptionHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.*;
-
-import com.abc.senki.common.OrderStatus.*;
 
 import static com.abc.senki.common.OrderStatus.*;
 
@@ -117,7 +108,7 @@ public class OrderController {
             }
             //Save order
             order.setMethod("PAYPAL");
-            order.setStatus(PENDING.getMesssage());
+            order.setStatus(PENDING.getMessage());
             orderService.saveOrder(order);
             //Response
             HashMap<String,Object> data=new HashMap<>();
@@ -193,7 +184,7 @@ public class OrderController {
             cartProcess(order,cartList);
             //Save order
             order.setMethod("COD");
-            order.setStatus(PROCESSING.getMesssage());
+            order.setStatus(PROCESSING.getMessage());
             orderService.saveOrder(order);
             return ResponseEntity
                     .ok(new SuccessResponse(HttpStatus.OK.value(),"Order successfully",null));
@@ -215,7 +206,7 @@ public class OrderController {
             Payment payment=paypalService.executePayment(paymentId,payerId);
             if(payment.getState().equals("approved")){
                 Map<String,Object> data=new HashMap<>();
-                orderService.updateOrderStatus(UUID.fromString(id),PROCESSING.getMesssage());
+                orderService.updateOrderStatus(UUID.fromString(id),PROCESSING.getMessage());
                 //Process order if payment success
                 data.put("orderId",id);
                 response.sendRedirect("http://localhost:3000/paypal/success?orderId="+id);
@@ -233,7 +224,7 @@ public class OrderController {
     @GetMapping("/pay/cancel/{id}")
     @Operation(summary = "Paypal payment cancel")
     public ResponseEntity<Object> cancelPay(@PathVariable String id){
-        orderService.updateOrderStatus(UUID.fromString(id),CANCELLED.getMesssage());
+        orderService.updateOrderStatus(UUID.fromString(id),CANCELLED.getMessage());
         return ResponseEntity.badRequest().body(new ErrorResponse("Payment cancel",HttpStatus.BAD_REQUEST.value()));
     }
 

@@ -2,24 +2,19 @@ package com.abc.senki.service.implement;
 
 import com.abc.senki.model.entity.*;
 import com.abc.senki.repositories.OrderRepository;
-import com.abc.senki.service.CartService;
 import com.abc.senki.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImpl implements OrderService {
     @Autowired
     OrderRepository orderRepository;
 
-    @Autowired
-    CartService cartService;
 
     @Override
     public void saveOrder(OrderEntity order) {

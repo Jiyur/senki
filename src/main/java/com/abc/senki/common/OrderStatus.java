@@ -3,7 +3,7 @@ package com.abc.senki.common;
 public enum OrderStatus {
     PENDING("pending"),
     PROCESSING("processing"),
-    SHIPPED("shipped"),
+    SHIPPING("shipping"),
     DELIVERED("delivered"),
     CANCELLED("cancelled");
 
@@ -13,7 +13,7 @@ public enum OrderStatus {
         this.message=message;
     }
 
-    public String getMesssage(){
+    public String getMessage(){
         return message;
     }
 

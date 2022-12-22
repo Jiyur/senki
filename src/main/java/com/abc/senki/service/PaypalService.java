@@ -1,8 +1,5 @@
 package com.abc.senki.service;
 
-import com.abc.senki.model.entity.CartEntity;
-import com.abc.senki.model.entity.CartItemEntity;
-import com.abc.senki.model.entity.OrderDetailEntity;
 import com.abc.senki.model.entity.OrderEntity;
 import com.paypal.api.payments.*;
 import com.paypal.base.rest.APIContext;

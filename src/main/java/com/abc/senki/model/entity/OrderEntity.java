@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -49,7 +48,7 @@ public class OrderEntity {
     public OrderEntity(UserEntity user) {
         this.id = UUID.randomUUID();
         this.user = user;
-        this.status=PENDING.getMesssage();
+        this.status=PENDING.getMessage();
         this.createdAt = LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"));
         this.total=0.0;
         this.shipFee=15000.0;

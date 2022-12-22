@@ -64,9 +64,7 @@ public class ProductEntity  {
 
 
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "cart",targetEntity = CartItemEntity.class,fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    private List<CartItemEntity> list;
+
 
 
 
