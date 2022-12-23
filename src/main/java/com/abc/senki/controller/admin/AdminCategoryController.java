@@ -97,4 +97,23 @@ public class AdminCategoryController {
                     .body(ErrorResponse.error(ERROR_TRY_AGAIN.getMessage(), HttpStatus.BAD_REQUEST.value()));
         }
     }
+    @GetMapping("{id}")
+    @Operation(summary = "get cate by id")
+    public ResponseEntity<Object> getCateById(@PathVariable UUID id){
+        try{
+            CategoryEntity category=categoryService.findById(id.toString());
+            if(category==null){
+                return ResponseEntity.badRequest()
+                        .body(ErrorResponse.error(ERROR_TRY_AGAIN.getMessage(), HttpStatus.BAD_REQUEST.value()));
+            }
+            HashMap<String,Object> data=new HashMap<>();
+            data.put("cate",category);
+            return ResponseEntity
+                    .ok(new SuccessResponse(HttpStatus.OK.value(),"Get category successfully", data));
+        }
+        catch (Exception e){
+            return ResponseEntity.badRequest()
+                    .body(ErrorResponse.error(ERROR_TRY_AGAIN.getMessage(), HttpStatus.BAD_REQUEST.value()));
+        }
+    }
 }
