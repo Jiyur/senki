@@ -135,7 +135,7 @@ public class ProductRatingController {
     @Operation(summary = "Add comment for rating")
     public ResponseEntity<Object> addComment(@PathVariable String ratingId,
                                              HttpServletRequest request,
-                                             @RequestBody @Valid AddNewCommentRequest comment) {
+                                                @RequestBody @Valid AddNewCommentRequest comment) {
         try{
             UserEntity user= authenticationHandler.userAuthenticate(request);
             if(user==null){

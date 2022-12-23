@@ -82,7 +82,7 @@ public class AdminCategoryController {
                 return ResponseEntity.badRequest()
                         .body(ErrorResponse.error(ERROR_TRY_AGAIN.getMessage(), HttpStatus.BAD_REQUEST.value()));
             }
-            if(!editCateRequest.getParentCateId().toString().isEmpty()){
+            if(editCateRequest.getParentCateId()!=null){
                 category.setParent(categoryService.findById(editCateRequest.getParentCateId().toString()));
             }
             if(editCateRequest.getName()!=null){
