@@ -47,7 +47,7 @@ public class AdminOrderController {
             else{
                 Pageable pageable= PageRequest.of(page,size, Sort.by("createdAt").descending());
                 HashMap<String,Object> data=new HashMap<>();
-                List<OrderEntity> list=orderService.getOrderByUser(user,pageable);
+                List<OrderEntity> list=orderService.getAllOrder(pageable);
                 data.put("orders",list);
                 return ResponseEntity.ok(new SuccessResponse(HttpStatus.OK.value(),"Get order successfully",data));
             }
