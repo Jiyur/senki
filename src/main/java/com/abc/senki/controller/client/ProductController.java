@@ -93,7 +93,7 @@ public class ProductController  {
     @Operation(summary = "Get product by category id")
     public ResponseEntity<Object> getProductByParent(@PathVariable String id,
                                                      @RequestParam(defaultValue = "0") int page,
-                                                     @RequestParam(defaultValue = "6") int size,
+                                                     @RequestParam(defaultValue = "10") int size,
                                                      @RequestParam(defaultValue = "product_id") SortingEnum sort,
                                                      @RequestParam(defaultValue = "0") Double min_price,
                                                      @RequestParam(defaultValue = "10000000") Double max_price

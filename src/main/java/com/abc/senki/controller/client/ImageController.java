@@ -46,8 +46,11 @@ public class ImageController {
                            .body(ErrorResponse.error("File is not image", HttpStatus.UNSUPPORTED_MEDIA_TYPE.value()));
                }
            }
-           imageStorageService.destroyProductImg(UUID.fromString(id));
-           productService.deleteListImgProduct(product);
+           if(!product.getImageList().isEmpty()){
+               imageStorageService.destroyProductImg(UUID.fromString(id));
+               productService.deleteListImgProduct(product);
+           }
+//
            for (MultipartFile file : files){
                index +=1;
                String url = imageStorageService.saveProductImg(file, id+"/"+"img"+index);
@@ -56,13 +59,12 @@ public class ImageController {
                    return ResponseEntity.status(HttpStatus.BAD_REQUEST.value())
                            .body(ErrorResponse.error("Error when upload image", HttpStatus.BAD_REQUEST.value()));
            }
+           product.setImageList(null);
            productService.saveListImageProduct(urls,product);
            HashMap<String,Object> data=new HashMap<>();
-           data.put("Success","success");
-           System.out.println(data);
 
            return ResponseEntity
-                   .ok(new SuccessResponse(HttpStatus.OK.value(),"Upload image successfully", data));
+                   .ok(new SuccessResponse(HttpStatus.OK.value(),"Upload image successfully", null));
        }
        catch (Exception e){
            System.out.println(e.getMessage());
