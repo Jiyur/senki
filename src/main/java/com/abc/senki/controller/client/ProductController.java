@@ -44,7 +44,7 @@ public class ProductController  {
     @GetMapping("")
     @Operation(summary = "Get all product")
     public ResponseEntity<Object> getAllProduct(@RequestParam(defaultValue = "0") int page,
-                                                @RequestParam(defaultValue = "6") int size,
+                                                @RequestParam(defaultValue = "20") int size,
                                                 @RequestParam(defaultValue = "product_id") SortingEnum sort,
                                                 @RequestParam(defaultValue = "0") Double minPrice,
                                                 @RequestParam(defaultValue = "10000000") Double maxPrice) {
