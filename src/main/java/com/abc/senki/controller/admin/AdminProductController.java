@@ -85,6 +85,10 @@ public class AdminProductController {
         try{
             ProductEntity product=productService.findById(id);
             product.setInfo(request.getName(), request.getDescription(), request.getPrice(), request.getStock());
+            if(!product.getProductCategory().getId().toString().equals(request.getCate_id())){
+                CategoryEntity categoryEntity=categoryService.findById(request.getCate_id());
+                product.setProductCategory(categoryEntity);
+            }
             if(request.getBrand_id().length()>0){
                 product.setBrand(brandService.getBrandById(Integer.parseInt(request.getBrand_id())));
             }
