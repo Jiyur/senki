@@ -37,7 +37,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<CategoryEntity> findAllParent() {
-        return categoryRepository.findDistinctBySubCategoriesNotNull();
+        return categoryRepository.findDistinctByParentIsNull();
     }
 
     @Override

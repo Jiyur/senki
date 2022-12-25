@@ -11,6 +11,6 @@ import java.util.UUID;
 @EnableJpaRepositories
 public interface CategoryRepository extends JpaRepository<CategoryEntity, UUID> {
     Optional<CategoryEntity> findById(UUID cateId);
-    List<CategoryEntity> findDistinctBySubCategoriesNotNull();
+    List<CategoryEntity> findDistinctByParentIsNull();
     Boolean existsByName(String name);
 }
