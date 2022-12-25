@@ -38,7 +38,7 @@ public class AdminOrderController {
     @Operation(summary = "Get all order ")
     public ResponseEntity<Object> getAllOrder(HttpServletRequest request,
                                               @RequestParam(defaultValue = "0") int page,
-                                              @RequestParam(defaultValue = "8") int size){
+                                              @RequestParam(defaultValue = "20") int size){
         UserEntity user=authenticationHandler.userAuthenticate(request);
         try{
             if(user==null){
