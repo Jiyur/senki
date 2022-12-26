@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URI;
 import java.util.*;
 
 import static com.abc.senki.common.OrderStatus.*;
@@ -197,19 +198,21 @@ public class OrderController {
 
     @GetMapping("/pay/success/{id}")
     @Operation(summary = "Paypal payment success")
-    public ResponseEntity<Object> successPay(@PathVariable String id,
+    public ResponseEntity<Object> successPay(@PathVariable("id") String id,
                                              @RequestParam("paymentId") String paymentId,
+                                             @RequestParam("redirectURI") String uri,
                                              @RequestParam("PayerID") String payerId,
                                              HttpServletResponse response){
         //Execute payment
         try{
             Payment payment=paypalService.executePayment(paymentId,payerId);
+            System.out.println(uri.toString());
             if(payment.getState().equals("approved")){
                 Map<String,Object> data=new HashMap<>();
                 orderService.updateOrderStatus(UUID.fromString(id),PROCESSING.getMessage());
                 //Process order if payment success
                 data.put("orderId",id);
-                response.sendRedirect("http://localhost:3000/paypal/success?orderId="+id);
+                response.sendRedirect(uri.toString()+"/paypal/success?orderId="+id);
                 return ResponseEntity.ok(new SuccessResponse(HttpStatus.OK.value(),"Payment success",data));
             }
         }

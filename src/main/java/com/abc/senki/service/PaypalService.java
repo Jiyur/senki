@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,9 +70,13 @@ public class PaypalService {
     public String paypalPayment(OrderEntity order, HttpServletRequest request){
 
         try {
+            String host=request.getHeader("origin");
+            URI uri=new URI(host);
+
             Payment payment = createPayment(order, "USD", "paypal", "sale",
-                    HOST+CANCEL_URL+order.getId().toString(),
-                    HOST+SUCCESS_URL+order.getId().toString());
+                    host+CANCEL_URL+order.getId().toString(),
+                    host+SUCCESS_URL+order.getId().toString()+"?redirectURI="
+                            +request.getHeader("origin"));
             for(Links link:payment.getLinks()){
                 if(link.getRel().equals("approval_url")){
                     return link.getHref();
@@ -78,6 +84,8 @@ public class PaypalService {
             }
         } catch (PayPalRESTException e) {
             e.printStackTrace();
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
         }
         return null;
     }
