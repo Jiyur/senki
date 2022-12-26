@@ -74,8 +74,8 @@ public class PaypalService {
             URI uri=new URI(host);
 
             Payment payment = createPayment(order, "USD", "paypal", "sale",
-                    host+CANCEL_URL+order.getId().toString(),
-                    host+SUCCESS_URL+order.getId().toString()+"?redirectURI="
+                    HOST+CANCEL_URL+order.getId().toString(),
+                    HOST+SUCCESS_URL+order.getId().toString()+"?redirectURI="
                             +request.getHeader("origin"));
             for(Links link:payment.getLinks()){
                 if(link.getRel().equals("approval_url")){
