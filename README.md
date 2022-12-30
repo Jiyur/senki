@@ -2,7 +2,7 @@
 # Đề tài: Phát triển website kinh doanh nhạc cụ
 
 ## Thành viên thực hiện:
-- Trần Quang Khánh 19110436
+- Trần Quang Khánh 19110376
 - Huỳnh Đình Thông 19110046
 ## Các công nghệ sử dụng
 ```
