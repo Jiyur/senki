@@ -46,7 +46,7 @@
                                     <span
                                             style="display:inline-block; vertical-align:middle; margin:29px 0 26px; border-bottom:1px solid #cecece; width:100px;"></span>
                                     <p style="color:#455056; font-size:15px;line-height:24px; margin:0;">
-                                        Hi <h4>${fullName} </h4>We cannot simply send you your old password. A unique link to reset your
+                                        Hi <h4> ${fullName} </h4>We cannot simply send you your old password. A unique link to reset your
                                         password has been generated for you. To reset your password, click the
                                         following link and follow the instructions.
                                     </p>
