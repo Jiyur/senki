@@ -46,10 +46,8 @@ public class ImageController {
                            .body(ErrorResponse.error("File is not image", HttpStatus.UNSUPPORTED_MEDIA_TYPE.value()));
                }
            }
-           if(!product.getImageList().isEmpty()){
-               imageStorageService.destroyProductImg(UUID.fromString(id));
-               productService.deleteListImgProduct(product);
-           }
+           imageStorageService.destroyProductImg(UUID.fromString(id));
+           productService.deleteListImgProduct(product);
 //
            for (MultipartFile file : files){
                index +=1;
