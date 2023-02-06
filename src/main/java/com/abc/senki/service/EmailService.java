@@ -7,7 +7,8 @@ import javax.servlet.http.HttpServletRequest;
 
 @Component
 public interface EmailService {
-    public void sendForgetPasswordMessage(String host,UserEntity user);
+    void sendForgetPasswordMessage(String host,UserEntity user);
+    void sendGridEmail(String host, UserEntity user);
 
 }
 

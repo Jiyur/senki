@@ -65,7 +65,7 @@ public class AdminUserController {
         }
         catch (Exception e){
             return ResponseEntity.badRequest()
-                    .body(ErrorResponse.error("Error! Please try again later",HttpStatus.BAD_REQUEST.value()));
+                    .body(ErrorResponse.error(e.toString(),HttpStatus.BAD_REQUEST.value()));
         }
     }
 

@@ -10,8 +10,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class ProductMapping {
-    @Autowired
-    BrandService brandService;
+
     public static ProductEntity toEntity(AddNewProductRequest request, CategoryEntity category){
         ProductEntity productEntity = new ProductEntity();
         productEntity.setName(request.getName());

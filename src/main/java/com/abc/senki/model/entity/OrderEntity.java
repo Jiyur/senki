@@ -34,7 +34,7 @@ public class OrderEntity {
     @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL,mappedBy = "order")
     private List<OrderDetailEntity> orderDetails;
 
-
+    private Double discount;
 
 
     private String status;
@@ -51,6 +51,7 @@ public class OrderEntity {
         this.status=PENDING.getMessage();
         this.createdAt = LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"));
         this.total=0.0;
+        this.discount=0.0;
         this.shipFee=15000.0;
     }
 

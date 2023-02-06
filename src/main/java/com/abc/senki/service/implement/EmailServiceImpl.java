@@ -4,7 +4,16 @@ import com.abc.senki.model.entity.UserEntity;
 import com.abc.senki.security.jwt.JwtUtils;
 import com.abc.senki.service.EmailService;
 
+import com.sendgrid.Method;
+import com.sendgrid.Request;
+import com.sendgrid.Response;
+import com.sendgrid.SendGrid;
+import com.sendgrid.helpers.mail.Mail;
+import com.sendgrid.helpers.mail.objects.Content;
+import com.sendgrid.helpers.mail.objects.Email;
+import com.sendgrid.helpers.mail.objects.Personalization;
 import freemarker.template.*;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -32,8 +41,12 @@ public class EmailServiceImpl implements EmailService {
 
     @Autowired
     private Configuration config;
-    @Value("${apps.server.host}")
-    private String host;
+
+    @Autowired
+    private SendGrid sendGrid;
+
+    @Value("${sendgrid.template-id}")
+    private String templateId;
 
 
     @Override
@@ -61,45 +74,53 @@ public class EmailServiceImpl implements EmailService {
             helper.setText(html,true);
             javaMailSender.send(message);
 
-//        final String username = "vmlej31287@gmail.com";
-//        final String password = "nhvlwdydflkdguxx";
-//
-//        Properties prop = new Properties();
-//        prop.put("mail.smtp.host", "smtp.gmail.com");
-//        prop.put("mail.smtp.port", "587");
-//        prop.put("mail.smtp.auth", "true");
-//        prop.put("mail.smtp.starttls.enable", "true"); //TLS
-//
-//        Session session = Session.getInstance(prop,
-//                new javax.mail.Authenticator() {
-//                    protected PasswordAuthentication getPasswordAuthentication() {
-//                        return new PasswordAuthentication(username, password);
-//                    }
-//                });
-//
-//        try{
-//            Template template= config.getTemplate("email-temp.ftl");
-//            Map<String, Object> model=new HashMap<>();
-//            model.put("fullName",user.getFullName());
-//            model.put("link",host+"?token="+jwtUtils.generateEmailJwtToken(user.getEmail()));
-//            String html = FreeMarkerTemplateUtils.processTemplateIntoString(template, model);
-//            Message message = new MimeMessage(session);
-//            message.setFrom(new InternetAddress("vmlej31287@gmail.com"));
-//            message.setRecipients(
-//                    Message.RecipientType.TO,
-//                    InternetAddress.parse(user.getEmail())
-//            );
-//            message.setSubject("Reset password");
-//            message.setText(html);
-//            Transport.send(message);
-//
-//
         } catch (MessagingException | IOException | TemplateException e) {
             e.printStackTrace();
         }
 
     }
 
+    @Override
+    public void sendGridEmail(String host, UserEntity user) {
+        Mail mail=prepareEmail(host,user.getEmail());
+        Request request = new Request();
+        request.setMethod(Method.POST);
+        request.setEndpoint("mail/send");
+
+        try {
+            request.setBody(mail.build());
+            Response response = sendGrid.api(request);
+            System.out.println(response.getStatusCode());
+            System.out.println(response.getBody().toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+    //Configura prepare email
+    public Mail prepareEmail(String host,String email){
+        Mail mail = new Mail();
+        //Set email from
+        Email from = new Email();
+        from.setName("Senki");
+        from.setEmail("senki@em2738.senki.me");
+
+        //Set email to
+        Email to= new Email();
+        to.setEmail(email);
+        //Set email subject
+        Personalization personalization = new Personalization();
+        personalization.addTo(to);
+        //
+        mail.setTemplateId(templateId);
+        mail.setFrom(from);
+        mail.addPersonalization(personalization);
+        personalization.addDynamicTemplateData("reset_link",
+                host+"/reset?token="+jwtUtils.generateEmailJwtToken(email));
+
+        return mail;
+    }
 
 }
 

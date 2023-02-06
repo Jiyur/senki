@@ -1,6 +1,7 @@
 package com.abc.senki.controller.client;
 
 import com.abc.senki.handler.AuthenticationHandler;
+import com.abc.senki.handler.BadRequestException;
 import com.abc.senki.model.entity.*;
 import com.abc.senki.model.payload.request.OrderRequest.CartItemList;
 import com.abc.senki.model.payload.response.ErrorResponse;
@@ -8,6 +9,7 @@ import com.abc.senki.model.payload.response.SuccessResponse;
 import com.abc.senki.service.OrderService;
 import com.abc.senki.service.PaypalService;
 import com.abc.senki.service.UserService;
+import com.abc.senki.service.VoucherService;
 import com.paypal.api.payments.Payment;
 import com.paypal.base.rest.PayPalRESTException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,6 +23,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URI;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 import static com.abc.senki.common.OrderStatus.*;
@@ -31,6 +35,8 @@ import static com.abc.senki.common.OrderStatus.*;
 public class OrderController {
     @Autowired
     AuthenticationHandler authenticationHandler;
+    @Autowired
+    VoucherService voucherService;
 
     public static final String SUCCESS_URL = "/api/order/pay/success";
     public static final String CANCEL_URL = "/api/order/pay/cancel";
@@ -71,7 +77,8 @@ public class OrderController {
     }
     @PostMapping("paypal")
     @Operation(summary = "Add PAYPAL order")
-    public ResponseEntity<Object> addPayPalOrder(HttpServletRequest request,@RequestBody List<CartItemList> cartList){
+    public ResponseEntity<Object> addPayPalOrder(HttpServletRequest request,@RequestBody List<CartItemList> cartList,
+                                                 @RequestParam(defaultValue ="0") String voucherCode){
         try{
             UserEntity user=authenticationHandler.userAuthenticate(request);
             if(user==null){
@@ -81,26 +88,24 @@ public class OrderController {
 
             OrderEntity order=new OrderEntity(user);
             //Set order address
-            OrderAddress address=new OrderAddress();
-            address.setDistrict(user.getAddress().getDistrict());
-            address.setProvince(user.getAddress().getProvince());
-            address.setCommune(user.getAddress().getCommune());
-            address.setInfo(
-                   user.getAddress().getFullName(),
-                     user.getAddress().getCompanyName(), user.getAddress().getPhoneNumber(),
-                    user.getAddress().getProvince(),
-                    user.getAddress().getDistrict(),
-                    user.getAddress().getCommune(),
-                    user.getAddress().getAddressDetail()
-            );
-            order.setAddress(address);
+            setOrderAddress(order,user);
 
-            if(order.getAddress()==null){
-                return ResponseEntity.badRequest()
-                        .body(new ErrorResponse("Address not found", HttpStatus.BAD_REQUEST.value()));
-            }
             //Calculate total
             cartProcess(order,cartList);
+            order.setTotal(order.getTotal()+order.getShipFee());
+
+            if(!voucherCode.equals(0)){
+                VoucherEntity voucher=voucherService.findByCode(voucherCode);
+                if(voucher!=null
+                        &&voucher.getEndDate().isBefore(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")))){
+                    voucherDiscount(order,voucher);
+                }
+                else{
+                    return ResponseEntity.badRequest()
+                            .body(new ErrorResponse("Voucher invalid", HttpStatus.BAD_REQUEST.value()));
+                }
+            }
+
             //Process Payment
             String link=paypalService.paypalPayment(order,request);
             if(link==null){
@@ -132,11 +137,7 @@ public class OrderController {
                         .body(new ErrorResponse("User not found", HttpStatus.BAD_REQUEST.value()));
             }
             OrderEntity order=orderService.getOrderById(id);
-            if(order==null){
-                return ResponseEntity.badRequest()
-                        .body(new ErrorResponse("Order not found", HttpStatus.BAD_REQUEST.value()));
-            }
-            if(!order.getUser().getId().equals(user.getId())){
+            if(order==null||!order.getUser().equals(user)){
                 return ResponseEntity.badRequest()
                         .body(new ErrorResponse("Order not found", HttpStatus.BAD_REQUEST.value()));
             }
@@ -153,8 +154,9 @@ public class OrderController {
     @PostMapping("cod")
     @Operation(summary = "Add COD order")
     public ResponseEntity<Object> addCODOrder(HttpServletRequest request,
-                                              @RequestBody List<CartItemList> cartList
-    ) {
+                                              @RequestBody List<CartItemList> cartList,
+                                                @RequestParam(defaultValue ="0") String voucherCode){
+
         try{
             UserEntity user=authenticationHandler.userAuthenticate(request);
             if(user==null){
@@ -164,26 +166,24 @@ public class OrderController {
 
             OrderEntity order=new OrderEntity(user);
             //Set order address
-            OrderAddress address=new OrderAddress();
-            address.setDistrict(user.getAddress().getDistrict());
-            address.setProvince(user.getAddress().getProvince());
-            address.setCommune(user.getAddress().getCommune());
-            address.setInfo(
-                    user.getAddress().getFullName(),
-                    user.getAddress().getCompanyName(), user.getAddress().getPhoneNumber(),
-                    user.getAddress().getProvince(),
-                    user.getAddress().getDistrict(),
-                    user.getAddress().getCommune(),
-                    user.getAddress().getAddressDetail()
-            );
-            order.setAddress(address);
-            if(order.getAddress()==null){
-                return ResponseEntity.badRequest()
-                        .body(new ErrorResponse("Address not found", HttpStatus.BAD_REQUEST.value()));
-            }
+            setOrderAddress(order,user);
+
             //Calculate total
             cartProcess(order,cartList);
+            if(!voucherCode.equals("0")){
+                VoucherEntity voucher=voucherService.findByCode(voucherCode);
+                if(voucher!=null
+                        &&voucher.getEndDate().isAfter(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")))){
+                    voucherDiscount(order,voucher);
+                }
+                else{
+                    return ResponseEntity.badRequest()
+                            .body(new ErrorResponse("Voucher invalid", HttpStatus.BAD_REQUEST.value()));
+                }
+            }
+
             //Save order
+            order.setTotal(order.getTotal()+order.getShipFee());
             order.setMethod("COD");
             order.setStatus(PROCESSING.getMessage());
             orderService.saveOrder(order);
@@ -215,14 +215,12 @@ public class OrderController {
                 response.sendRedirect(uri.toString()+"/paypal/success?orderId="+id);
                 return ResponseEntity.ok(new SuccessResponse(HttpStatus.OK.value(),"Payment success",data));
             }
+            throw new BadRequestException("Payment failed");
+
         }
-        catch (PayPalRESTException e){
-            return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage(),HttpStatus.BAD_REQUEST.value()));
+        catch (Exception e){
+            throw new BadRequestException(e.getMessage());
         }
-        catch (IOException e1){
-            return ResponseEntity.badRequest().body(new ErrorResponse(e1.getMessage(),HttpStatus.BAD_REQUEST.value()));
-        }
-        return ResponseEntity.badRequest().body(new ErrorResponse("Payment failed",HttpStatus.BAD_REQUEST.value()));
     }
     @GetMapping("/pay/cancel/{id}")
     @Operation(summary = "Paypal payment cancel")
@@ -248,8 +246,31 @@ public class OrderController {
         }
         //Set item and delete cart
         order.setOrderDetails(orderDetailList);
-        order.setTotal(order.getTotal()+order.getShipFee());
     }
+    public void voucherDiscount(OrderEntity order, VoucherEntity voucher){
+        if(voucher.getType().equals("percent")){
+            order.setTotal(order.getTotal()*(1-voucher.getValue()/100));
+        }
+        else{
+            order.setTotal(order.getTotal()-voucher.getValue());
+        }
+    }
+    public void setOrderAddress(OrderEntity order, UserEntity user){
+        OrderAddress address=new OrderAddress();
+        address.setDistrict(user.getAddress().getDistrict());
+        address.setProvince(user.getAddress().getProvince());
+        address.setCommune(user.getAddress().getCommune());
+        address.setInfo(
+                user.getAddress().getFullName(),
+                user.getAddress().getCompanyName(), user.getAddress().getPhoneNumber(),
+                user.getAddress().getProvince(),
+                user.getAddress().getDistrict(),
+                user.getAddress().getCommune(),
+                user.getAddress().getAddressDetail()
+        );
+        order.setAddress(address);
+    }
+
 
 
 

@@ -33,11 +33,10 @@ public class OAuth2Handler extends SimpleUrlAuthenticationSuccessHandler {
 
     private final CookieOAuth2RequestRepository cookieOAuth2RequestRepository;
 
-
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         String targetUrl = determineTargetUrl(request, response,authentication);
-        //linkfront/rerirect?token=xxxx
+        //frontend-host/redirect?token=xxxx
         if (response.isCommitted()) {
             log.debug("Response has already been committed. Unable to redirect to " + targetUrl);
             return;

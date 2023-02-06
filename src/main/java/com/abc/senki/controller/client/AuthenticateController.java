@@ -208,6 +208,7 @@ public class AuthenticateController {
            }
               return ResponseEntity.badRequest()
                      .body(ErrorResponse.error("Reset password failed", HttpStatus.BAD_REQUEST.value()));
+           
 
        }
        catch (Exception e){
@@ -222,17 +223,17 @@ public class AuthenticateController {
     public ResponseEntity<Object> forgetPassword(@RequestBody @Valid ForgetPasswordRequest request, BindingResult errors,
                                                  HttpServletRequest req) throws MethodArgumentNotValidException {
         try {
-            if (errors.hasErrors()) {
-                throw new MethodArgumentNotValidException(errors);
-            }
-            if (request == null) {
-                throw new HttpMessageNotReadableException("Missing field");
-            }
+//            if (errors.hasErrors()) {
+//                throw new MethodArgumentNotValidException(errors);
+//            }
+//            if (request == null) {
+//                throw new HttpMessageNotReadableException("Missing field");
+//            }
             if (userService.findByEmail(request.getEmail()) == null) {
                 throw new HttpMessageNotReadableException("Email is not Registered");
             }
             UserEntity user = userService.findByEmail(request.getEmail());
-            emailService.sendForgetPasswordMessage(req.getHeader("Origin"),user);
+            emailService.sendGridEmail(req.getHeader("Origin"),user);
             HashMap<String, Object> data = new HashMap<>();
             data.put("email", user.getEmail());
             return ResponseEntity.ok(new SuccessResponse(HttpStatus.OK.value(), "Email sent successfully", data));
