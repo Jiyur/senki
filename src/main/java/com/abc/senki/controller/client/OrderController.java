@@ -100,10 +100,7 @@ public class OrderController {
                         &&voucher.getEndDate().isBefore(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")))){
                     voucherDiscount(order,voucher);
                 }
-                else{
-                    return ResponseEntity.badRequest()
-                            .body(new ErrorResponse("Voucher invalid", HttpStatus.BAD_REQUEST.value()));
-                }
+
             }
 
             //Process Payment
