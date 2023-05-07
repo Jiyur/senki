@@ -15,6 +15,7 @@ import com.abc.senki.service.CategoryService;
 import com.abc.senki.service.ProductService;
 import com.abc.senki.util.PageUtil;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -30,6 +31,7 @@ import static com.abc.senki.common.ErrorDefinition.ERROR_TRY_AGAIN;
 import static com.abc.senki.common.ErrorDefinition.SORTING_TYPE_NOT_FOUND;
 
 @RequestMapping("/api/seller/product")
+@SecurityRequirement(name = "bearerAuth")
 @RestController
 public class SellerProductController {
     @Autowired

@@ -86,23 +86,19 @@ public class OrderController {
                 return ResponseEntity.badRequest()
                         .body(new ErrorResponse("User not found", HttpStatus.BAD_REQUEST.value()));
             }
-
             OrderEntity order=new OrderEntity(user);
             //Set order address
             setOrderAddress(order,user);
             //Calculate total
             OrderUtil.cartProcess(order,cartList);
             order.setTotal(order.getTotal()+order.getShipFee());
-
             if(!voucherCode.equals(0)){
                 VoucherEntity voucher=voucherService.findByCode(voucherCode);
                 if(voucher!=null
                         &&voucher.getEndDate().isBefore(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")))){
                     voucherDiscount(order,voucher);
                 }
-
             }
-
             //Process Payment
             String link=paypalService.paypalPayment(order,request);
             if(link==null){
@@ -113,7 +109,6 @@ public class OrderController {
             order.setMethod("PAYPAL");
             order.setStatus(PENDING.getMessage());
             orderService.saveOrder(order);
-
             //Response
             HashMap<String,Object> data=new HashMap<>();
             data.put("link",link);
