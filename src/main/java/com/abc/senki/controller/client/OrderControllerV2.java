@@ -15,6 +15,7 @@ import com.abc.senki.util.OrderUtil;
 import com.paypal.api.payments.Order;
 import com.paypal.api.payments.Payment;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.User;
@@ -33,6 +34,7 @@ import static com.abc.senki.common.OrderStatus.PROCESSING;
 @RestController
 @Slf4j
 @RequestMapping("api/v2/order")
+@SecurityRequirement(name = "bearerAuth")
 public class OrderControllerV2 {
     @Autowired
     private AuthenticationHandler authenticationHandler;
@@ -85,7 +87,7 @@ public class OrderControllerV2 {
             System.out.println(uri);
             if(payment.getState().equals("approved")){
                 Map<String,Object> data=new HashMap<>();
-                orderService.updateOrderStatus(UUID.fromString(id),PROCESSING.getMessage());
+                orderService.updateAllOrderStatus(UUID.fromString(id),PROCESSING.getMessage());
                 //Process order if payment success
                 data.put("payId",id);
                 return ResponseEntity.ok(new SuccessResponse(HttpStatus.OK.value(),"Payment success",data));
