@@ -4,8 +4,6 @@ import com.abc.senki.model.entity.ImageProductEntity;
 import com.abc.senki.model.entity.ProductEntity;
 import com.abc.senki.repositories.ImageProductRepository;
 import com.abc.senki.repositories.ProductRepository;
-import com.abc.senki.repositories.spec.ProductSpecification;
-import com.abc.senki.repositories.spec.SearchCriteria;
 import com.abc.senki.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -36,8 +34,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductEntity saveProduct(ProductEntity product) {
-        return productsRepository.save(product);
+    public void saveProduct(ProductEntity product) {
+        productsRepository.save(product);
     }
 
     @Override
@@ -86,6 +84,21 @@ public class ProductServiceImpl implements ProductService {
     public void deleteListImgProduct(ProductEntity product) {
         List<ImageProductEntity> imageProductEntityList = imageRepository.findByProduct(product);
         imageRepository.deleteAll(imageProductEntityList);
+    }
+
+    @Override
+    public void disableProduct(String productId) {
+        productsRepository.disableProduct(UUID.fromString(productId));
+    }
+
+    @Override
+    public void enableProduct(String productId) {
+        productsRepository.enableProduct(UUID.fromString(productId));
+    }
+
+    @Override
+    public List<ProductEntity> findAllBySeller(UUID sellerId, Pageable page, Double minPrice, Double maxPrice) {
+        return productsRepository.findAllBySeller(sellerId,page,minPrice,maxPrice).stream().toList();
     }
 
 

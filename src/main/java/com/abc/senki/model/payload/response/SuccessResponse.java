@@ -2,6 +2,8 @@ package com.abc.senki.model.payload.response;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.http.protocol.HTTP;
+import org.springframework.http.HttpStatus;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,6 +27,11 @@ public class SuccessResponse {
         this.status = status;
         this.message = message;
 
+    }
+    public SuccessResponse(String message,Map<String,Object> data){
+        this.status= HttpStatus.OK.value();
+        this.message=message;
+        this.data=data;
     }
 
 

@@ -1,19 +1,19 @@
 package com.abc.senki.service;
 
 import com.abc.senki.model.entity.ProductEntity;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Component
 @Service
 public interface ProductService {
     List<ProductEntity> findPaginated(Pageable page,Double minPrice, Double maxPrice);
-    ProductEntity saveProduct(ProductEntity product);
+    void saveProduct(ProductEntity product);
     void deleteProductById(String id);
     ProductEntity findById(String id);
     List<ProductEntity> findAll(Specification<ProductEntity> spec);
@@ -25,5 +25,11 @@ public interface ProductService {
     void saveListImageProduct(List<String> listUrl, ProductEntity product);
 
     void deleteListImgProduct(ProductEntity product);
+
+    void disableProduct(String productId);
+
+    void enableProduct(String productId);
+
+    List<ProductEntity> findAllBySeller(UUID sellerId, Pageable page, Double minPrice, Double maxPrice);
 
 }

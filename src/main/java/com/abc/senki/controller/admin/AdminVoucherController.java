@@ -3,7 +3,6 @@ package com.abc.senki.controller.admin;
 import com.abc.senki.handler.BadRequestException;
 import com.abc.senki.model.entity.VoucherEntity;
 import com.abc.senki.model.payload.request.VoucherRequest.AddVoucher;
-import com.abc.senki.model.payload.response.ErrorResponse;
 import com.abc.senki.model.payload.response.SuccessResponse;
 import com.abc.senki.service.VoucherService;
 import io.swagger.v3.oas.annotations.Operation;

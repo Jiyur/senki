@@ -28,6 +28,7 @@ class SenkiApplicationTests {
     @Test
     void contextLoads() {
     }
+
     @Test
     void test() {
 //        ProductSpecification spec1=new ProductSpecification(new SearchCriteria("price",">",0));
@@ -41,6 +42,18 @@ class SenkiApplicationTests {
         LocalDateTime now1=LocalDateTime.now();
         System.out.println(now1);
 
+    }
+    @Test
+    void getA(){
+        int n=10;
+        int vo=n;
+        int keo=n;
+        while(vo-3>=0){
+            keo++;
+            vo++;
+            vo=vo-3;
+        }
+        System.out.println(keo);
     }
     public Pageable createPageRequest(int pageNo, int pageSize, String sort) {
         return switch (sort) {

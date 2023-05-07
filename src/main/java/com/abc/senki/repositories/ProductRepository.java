@@ -34,4 +34,16 @@ public interface ProductRepository extends JpaRepository<ProductEntity, UUID>, J
             nativeQuery = true)
     Page<ProductEntity> search(String name, Pageable pageable, Double minPrice, Double maxPrice);
 
+    //Set product Status to false
+    @Query(value = "UPDATE products SET status = false WHERE id = ?1", nativeQuery = true)
+    void disableProduct(UUID productId);
+    //Set product Status to true
+    @Query(value = "UPDATE products SET status = true WHERE id = ?1", nativeQuery = true)
+    void enableProduct(UUID productId);
+
+    @Query(value = "SELECT * FROM products WHERE price BETWEEN ?2 AND ?3 AND seller_id=?1",nativeQuery = true)
+    Page<ProductEntity> findAllBySeller(UUID sellerId, Pageable pageable, Double minPrice, Double maxPrice);
+
+
+
 }

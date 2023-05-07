@@ -7,6 +7,7 @@ import com.abc.senki.model.payload.request.ProductRequest.AddNewProductRequest;
 import com.abc.senki.model.payload.response.ErrorResponse;
 import com.abc.senki.model.payload.response.SuccessResponse;
 import com.abc.senki.repositories.BrandService;
+import com.abc.senki.repositories.ProductRepository;
 import com.abc.senki.service.CategoryService;
 import com.abc.senki.service.ImageStorageService;
 import com.abc.senki.service.ProductService;
@@ -20,7 +21,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDateTime;
 import java.util.*;
 
 import static com.abc.senki.common.ErrorDefinition.*;
@@ -44,27 +44,10 @@ public class AdminProductController {
 
     @Autowired
     BrandService brandService;
+    @Autowired
+    private ProductRepository productRepository;
 
-    @PostMapping("")
-    @Operation(summary = "Insert product")
-    public ResponseEntity<Object> insertProduct(@RequestBody AddNewProductRequest request){
-        CategoryEntity categoryEntity = categoryService.findById(request.getCate_id());
-        ProductEntity product= ProductMapping.toEntity(request,categoryEntity);
-        if(request.getBrand_id().length()>0){
-            product.setBrand(brandService.getBrandById(Integer.parseInt(request.getBrand_id())));
-        }
-        try{
-            productService.saveProduct(product);
-            HashMap<String,Object> data=new HashMap<>();
-            data.put("product_id",product.getId());
-            return ResponseEntity
-                    .ok(new SuccessResponse(HttpStatus.OK.value(),"Insert product successfully", data));
-        }
-        catch (Exception e){
-            return ResponseEntity.badRequest()
-                    .body(ErrorResponse.error(ERROR_TRY_AGAIN.getMessage(), HttpStatus.BAD_REQUEST.value()));
-        }
-    }
+
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete product by id")
     public  ResponseEntity<Object> deleteProduct(@PathVariable("id") String id){
@@ -78,6 +61,7 @@ public class AdminProductController {
                     .body(ErrorResponse.error(ERROR_TRY_AGAIN.getMessage(), HttpStatus.BAD_REQUEST.value()));
         }
     }
+
     @PutMapping("/{id}")
     @Operation(summary = "Update product by id")
     public ResponseEntity<Object> updateProduct(@PathVariable("id") String id,
@@ -133,4 +117,20 @@ public class AdminProductController {
 
     }
 
+    @PatchMapping("/disable/{id}")
+    @Operation(summary = "Disable product by id")
+    public ResponseEntity<Object> disableProduct(@PathVariable("id") String id){
+        productService.disableProduct(id);
+        return ResponseEntity
+                .ok(new SuccessResponse(HttpStatus.OK.value(),"Disable product successfully", null));
+
+    }
+    @PatchMapping("/enable/{id}")
+    @Operation(summary = "Enable product by id")
+    public ResponseEntity<Object> enableProduct(@PathVariable("id") String id){
+        productService.enableProduct(id);
+        return ResponseEntity
+                .ok(new SuccessResponse(HttpStatus.OK.value(),"Disable product successfully", null));
+
+    }
 }

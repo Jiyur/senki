@@ -67,7 +67,9 @@ public class UserEntity {
     @OneToMany(mappedBy = "user",targetEntity = OrderEntity.class,fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private List<OrderEntity> orderList;
 
-
+    @JsonIgnore
+    @OneToMany(mappedBy = "seller",targetEntity = ProductEntity.class,fetch = FetchType.LAZY)
+    private List<ProductEntity> productList;
 
     private boolean status;
     private boolean active;

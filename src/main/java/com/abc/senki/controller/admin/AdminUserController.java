@@ -27,14 +27,10 @@ public class AdminUserController {
     @Autowired
     AuthenticationHandler authenticationHandler;
     @Autowired
-    private ModelMapper mapper;
-    @Autowired
-    private PasswordEncoder encoder;
-    @Autowired
     private UserService userService;
     @GetMapping("user")
     @Operation(summary = "Get all user")
-    public ResponseEntity<Object> listAll(HttpServletRequest request){
+    public ResponseEntity<Object> listAll(){
         List<UserEntity> list;
         try{
             list=userService.getAllUser();
@@ -57,11 +53,22 @@ public class AdminUserController {
     }
     @DeleteMapping("user/{id}")
     @Operation(summary = "Delete user")
-    public ResponseEntity<Object> deleteUser(HttpServletRequest request,
-                                             @PathVariable("id") String id){
+    public ResponseEntity<Object> deleteUser(@PathVariable("id") String id){
         try{
             userService.deleteById(id);
             return ResponseEntity.ok(new SuccessResponse(HttpStatus.OK.value(),"Delete user successfully",null));
+        }
+        catch (Exception e){
+            return ResponseEntity.badRequest()
+                    .body(ErrorResponse.error(e.toString(),HttpStatus.BAD_REQUEST.value()));
+        }
+    }
+    @PatchMapping("user/{id}")
+    @Operation(summary = "Disable user")
+    public ResponseEntity<Object> disableUser(@PathVariable("id") String id){
+        try{
+            userService.setStatus(id,false);
+            return ResponseEntity.ok(new SuccessResponse(HttpStatus.OK.value(),"Disable user successfully",null));
         }
         catch (Exception e){
             return ResponseEntity.badRequest()

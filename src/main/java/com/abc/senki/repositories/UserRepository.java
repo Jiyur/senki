@@ -2,6 +2,8 @@ package com.abc.senki.repositories;
 
 import com.abc.senki.model.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import java.util.List;
@@ -18,6 +20,11 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
     Boolean existsByPhone(String phone);
     Optional<UserEntity> findByEmail(String email);
     void deleteById(UUID id);
+
+    @Modifying
+    @Query(value = "update users set status = ?2 where id = ?1", nativeQuery = true)
+    void setStatus(UUID id,Boolean status);
+
 
 
     Boolean existsByEmail(String email);

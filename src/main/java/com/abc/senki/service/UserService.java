@@ -19,7 +19,7 @@ public interface UserService {
     UserEntity saveInfo(UserEntity user);
     UserEntity findByEmail(String email);
     UserEntity updateActive(UserEntity user);
-    UserEntity setStatus(UserEntity user,Boolean status);
+    void setStatus(String id,Boolean status);
     void deleteById(String id);
 
     UserEntity saveUser(UserEntity user, String roleName);

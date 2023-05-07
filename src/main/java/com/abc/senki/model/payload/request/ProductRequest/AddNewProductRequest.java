@@ -32,4 +32,6 @@ public class AddNewProductRequest {
     private String cate_id;
 
     private String brand_id;
+
+    private String seller_id;
 }

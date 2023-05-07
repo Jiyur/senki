@@ -6,6 +6,7 @@ import com.abc.senki.model.payload.response.ErrorResponse;
 import com.abc.senki.model.payload.response.SuccessResponse;
 import com.abc.senki.service.CategoryService;
 import com.abc.senki.service.ProductService;
+import com.abc.senki.util.PageUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import net.kaczmarzyk.spring.data.jpa.domain.Like;
@@ -34,8 +35,7 @@ import static com.abc.senki.service.implement.ProductServiceImpl.*;
 @RestController
 @RequestMapping("/api/product")
 public class ProductController  {
-    private static final String PRICE_ASC = "product:price_up";
-    private static final String PRICE_DESC = "product:price_down";
+
     @Autowired
     ProductService productService;
 
@@ -48,14 +48,13 @@ public class ProductController  {
                                                 @RequestParam(defaultValue = "product_id") SortingEnum sort,
                                                 @RequestParam(defaultValue = "0") Double minPrice,
                                                 @RequestParam(defaultValue = "10000000") Double maxPrice) {
-        System.out.println("sort: "+sort.getSort());
 
         try{
             if(!SortType().contains(sort.getSort())){
                 return ResponseEntity.status(HttpStatus.CONFLICT)
                         .body(ErrorResponse.error(SORTING_TYPE_NOT_FOUND.getMessage(), HttpStatus.CONFLICT.value()));
             }
-            Pageable paging = createPageRequest(page, size, sort.getSort());
+            Pageable paging = PageUtil.createPageRequest(page, size, sort.getSort());
             List<ProductEntity> list=productService.findPaginated(paging,minPrice,maxPrice);
             if(list.isEmpty()){
                 return ResponseEntity.status(HttpStatus.NO_CONTENT)
@@ -103,7 +102,7 @@ public class ProductController  {
                 return ResponseEntity.status(HttpStatus.CONFLICT)
                         .body(ErrorResponse.error(SORTING_TYPE_NOT_FOUND.getMessage(), HttpStatus.CONFLICT.value()));
             }
-            Pageable paging = createPageRequest(page, size, sort.getSort());
+            Pageable paging = PageUtil.createPageRequest(page, size, sort.getSort());
             List<ProductEntity> list=productService.findAllByParent(id,paging,min_price,max_price);
             if(list.isEmpty()){
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -153,7 +152,7 @@ public class ProductController  {
                 return ResponseEntity.status(HttpStatus.CONFLICT)
                         .body(ErrorResponse.error(SORTING_TYPE_NOT_FOUND.getMessage(), HttpStatus.CONFLICT.value()));
             }
-            Pageable pageable=createPageRequest(page,size,sort.getSort());
+            Pageable pageable=PageUtil.createPageRequest(page,size,sort.getSort());
             List<ProductEntity> list=productService.listAll(key,pageable,min_price,max_price);
             if(list.isEmpty()){
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -172,13 +171,7 @@ public class ProductController  {
     }
 
 
-    public Pageable createPageRequest(int pageNo, int pageSize, String sort) {
-        return switch (sort) {
-            case PRICE_ASC -> PageRequest.of(pageNo, pageSize, Sort.by("price").ascending());
-            case PRICE_DESC -> PageRequest.of(pageNo, pageSize, Sort.by("price").descending());
-            default -> PageRequest.of(pageNo, pageSize, Sort.by(sort).descending());
-        };
-    }
+
 
 
 }

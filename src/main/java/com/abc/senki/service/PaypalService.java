@@ -17,6 +17,9 @@ import java.util.List;
 public class PaypalService {
     public static final String SUCCESS_URL = "/api/order/pay/success/";
     public static final String CANCEL_URL = "/api/order/pay/cancel/";
+
+    public static final String SUCCESS_URL_V2 = "/api/v2/order/pay/success/";
+    public static final String CANCEL_URL_V2 = "/api/v2/order/pay/cancel/";
     public static final String HOST="https://senki.me";
     @Autowired
     private APIContext apiContext;
@@ -32,6 +35,43 @@ public class PaypalService {
         Amount amount=new Amount();
         amount.setCurrency(currency);
         amount.setTotal(String.format("%.2f", order.getTotal()));
+        //Init transaction
+        Transaction transaction=new Transaction();
+        transaction.setAmount(amount);
+        List<Transaction>transactions=new ArrayList<>();
+        transactions.add(transaction);
+
+        //Init payment
+        Payer payer=new Payer();
+        payer.setPaymentMethod(method);
+        //Handle payerInfo
+//        PayerInfo payerInfo=payer.getPayerInfo();
+        //Handle payment
+        Payment payment = new Payment();
+        payment.setIntent(intent);
+        payment.setPayer(payer);
+        payment.setTransactions(transactions);
+        //Set redirect urls
+        RedirectUrls redirectUrls = new RedirectUrls();
+        redirectUrls.setCancelUrl(cancelUrl);
+        redirectUrls.setReturnUrl(successUrl);
+        payment.setRedirectUrls(redirectUrls);
+
+        return payment.create(apiContext);
+
+
+    }
+    public Payment createPayment(
+            Double total,
+            String currency,
+            String method,
+            String intent,
+            String cancelUrl,
+            String successUrl) throws PayPalRESTException {
+        //Set amount
+        Amount amount=new Amount();
+        amount.setCurrency(currency);
+        amount.setTotal(String.format("%.2f", total));
         //Init transaction
         Transaction transaction=new Transaction();
         transaction.setAmount(amount);
@@ -76,8 +116,8 @@ public class PaypalService {
             String orderId=order.getId().toString();
 
             Payment payment = createPayment(order, "USD", "paypal", "sale",
-                    HOST+CANCEL_URL+orderId,
-                    HOST+SUCCESS_URL+orderId+"?redirectURI="
+                    HOST+CANCEL_URL_V2+orderId,
+                    HOST+SUCCESS_URL_V2+orderId+"?redirectURI="
                             +request.getHeader("origin"));
             for(Links link:payment.getLinks()){
                 if(link.getRel().equals("approval_url")){
@@ -89,6 +129,26 @@ public class PaypalService {
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
+        return null;
+    }
+    public String paypalPaymentV2(String payId,HttpServletRequest request,Double total){
+        try{
+            String host=request.getHeader("origin");
+            URI uri=new URI(host);
+            Payment payment = createPayment(total,"USD", "paypal", "sale",
+                    HOST+CANCEL_URL+payId,
+                    HOST+SUCCESS_URL+payId+"?redirectURI="
+                            +request.getHeader("origin"));
+            for(Links link:payment.getLinks()){
+                if(link.getRel().equals("approval_url")){
+                    return link.getHref();
+                }
+            }
+        } catch (PayPalRESTException e) {
+        e.printStackTrace();
+        } catch (URISyntaxException e) {
+             throw new RuntimeException(e);
+         }
         return null;
     }
 

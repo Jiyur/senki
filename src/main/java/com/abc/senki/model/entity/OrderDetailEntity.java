@@ -50,7 +50,7 @@ public class OrderDetailEntity {
         this.order = order;
         this.productName = name;
         this.productId = id;
-       this.productImage = imageUrl;
+        this.productImage = imageUrl;
         this.quantity = quantity;
         this.price = price;
     }

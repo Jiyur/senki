@@ -23,17 +23,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserEntity findByFullName(String fullName) {
         Optional<UserEntity> user = userRepository.findByFullName(fullName);
-        if(user.isEmpty())
-            return null;
-        return user.get();
+        return user.orElse(null);
     }
 
     @Override
     public UserEntity findById(UUID uuid){
         Optional<UserEntity> user = userRepository.findById(uuid);
-        if(user.isEmpty())
-            return null;
-        return user.get();
+        return user.orElse(null);
     }
 
     @Override
@@ -56,18 +52,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserEntity findByEmail(String email) {
         Optional<UserEntity> user = userRepository.findByEmail(email);
-        if (user.isEmpty()){
-            return null;
-        }
-        return user.get();    }
+        return user.orElse(null);
+    }
 
     @Override
     public UserEntity findByPhone(String phone) {
         Optional<UserEntity> user = userRepository.findByPhone(phone);
-        if (user.isEmpty()){
-            return null;
-        }
-        return user.get();
+        return user.orElse(null);
     }
     @Override
     public Boolean existsByPhone(String phone) {
@@ -80,9 +71,8 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
     @Override
-    public UserEntity setStatus(UserEntity user,Boolean status) {
-        user.setStatus(status);
-        return userRepository.save(user);
+    public void setStatus(String id,Boolean status) {
+        userRepository.setStatus(UUID.fromString(id),status);
     }
 
     @Override

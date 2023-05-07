@@ -44,6 +44,5 @@ public class CategoryEntity  {
     private Collection<CategoryEntity> subCategories;
 
 
-
-
+   
 }

@@ -34,6 +34,8 @@ public class OrderEntity {
     @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL,mappedBy = "order")
     private List<OrderDetailEntity> orderDetails;
 
+    private UUID sellerId;
+
     private Double discount;
 
 
@@ -44,6 +46,9 @@ public class OrderEntity {
     private LocalDateTime createdAt;
 
     private Double shipFee;
+
+    @Column(name = "pay_id")
+    private String payId;
 
     public OrderEntity(UserEntity user) {
         this.id = UUID.randomUUID();

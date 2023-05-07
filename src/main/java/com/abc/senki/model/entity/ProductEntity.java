@@ -3,6 +3,7 @@ package com.abc.senki.model.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import org.apache.catalina.User;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
@@ -32,7 +33,7 @@ public class ProductEntity  {
 
     private int stock;
 
-    private int status;
+    private boolean status;
 
     private int sellAmount;
 
@@ -49,6 +50,10 @@ public class ProductEntity  {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "\"brand_id\"")
     private BrandEntity brand;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="\"seller_id\"")
+    private UserEntity seller;
 
 
 

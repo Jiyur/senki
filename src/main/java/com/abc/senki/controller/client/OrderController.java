@@ -10,6 +10,7 @@ import com.abc.senki.service.OrderService;
 import com.abc.senki.service.PaypalService;
 import com.abc.senki.service.UserService;
 import com.abc.senki.service.VoucherService;
+import com.abc.senki.util.OrderUtil;
 import com.paypal.api.payments.Payment;
 import com.paypal.base.rest.PayPalRESTException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -89,9 +90,8 @@ public class OrderController {
             OrderEntity order=new OrderEntity(user);
             //Set order address
             setOrderAddress(order,user);
-
             //Calculate total
-            cartProcess(order,cartList);
+            OrderUtil.cartProcess(order,cartList);
             order.setTotal(order.getTotal()+order.getShipFee());
 
             if(!voucherCode.equals(0)){
@@ -167,7 +167,7 @@ public class OrderController {
             setOrderAddress(order,user);
 
             //Calculate total
-            cartProcess(order,cartList);
+            OrderUtil.cartProcess(order,cartList);
             if(!voucherCode.equals("0")){
                 VoucherEntity voucher=voucherService.findByCode(voucherCode);
                 if(voucher!=null
@@ -204,13 +204,13 @@ public class OrderController {
         //Execute payment
         try{
             Payment payment=paypalService.executePayment(paymentId,payerId);
-            System.out.println(uri.toString());
+            System.out.println(uri);
             if(payment.getState().equals("approved")){
                 Map<String,Object> data=new HashMap<>();
                 orderService.updateOrderStatus(UUID.fromString(id),PROCESSING.getMessage());
                 //Process order if payment success
                 data.put("orderId",id);
-                response.sendRedirect(uri.toString()+"/paypal/success?orderId="+id);
+                response.sendRedirect(uri+"/paypal/success?orderId="+id);
                 return ResponseEntity.ok(new SuccessResponse(HttpStatus.OK.value(),"Payment success",data));
             }
             throw new BadRequestException("Payment failed");
@@ -228,23 +228,23 @@ public class OrderController {
     }
 
     //Process COD order
-    public void cartProcess(OrderEntity order, List<CartItemList> listCart){
-        List<OrderDetailEntity> orderDetailList = new ArrayList<>();
-        for (CartItemList cartItem:listCart)
-        {
-            OrderDetailEntity orderDetail=new OrderDetailEntity();
-            orderDetail.setInfo(order,
-                    cartItem.getProductName(),
-                    cartItem.getProductId(),
-                    cartItem.getProductImage(),
-                    cartItem.getQuantity(),
-                    cartItem.getPrice());
-            orderDetailList.add(orderDetail);
-            order.setTotal(order.getTotal()+cartItem.getPrice()*cartItem.getQuantity());
-        }
-        //Set item and delete cart
-        order.setOrderDetails(orderDetailList);
-    }
+//    public void cartProcess(OrderEntity order, List<CartItemList> listCart){
+//        List<OrderDetailEntity> orderDetailList = new ArrayList<>();
+//        for (CartItemList cartItem:listCart)
+//        {
+//            OrderDetailEntity orderDetail=new OrderDetailEntity();
+//            orderDetail.setInfo(order,
+//                    cartItem.getProductName(),
+//                    cartItem.getProductId(),
+//                    cartItem.getProductImage(),
+//                    cartItem.getQuantity(),
+//                    cartItem.getPrice());
+//            orderDetailList.add(orderDetail);
+//            order.setTotal(order.getTotal()+cartItem.getPrice()*cartItem.getQuantity());
+//        }
+//        //Set item and delete cart
+//        order.setOrderDetails(orderDetailList);
+//    }
     public void voucherDiscount(OrderEntity order, VoucherEntity voucher){
         if(voucher.getType().equals("percent")){
             order.setTotal(order.getTotal()*(1-voucher.getValue()/100));

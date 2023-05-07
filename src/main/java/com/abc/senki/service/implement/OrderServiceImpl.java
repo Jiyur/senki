@@ -23,6 +23,11 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public void saveOrderList(List<OrderEntity> orderList) {
+        orderRepository.saveAll(orderList);
+    }
+
+    @Override
     public OrderEntity getOrderById(UUID id) {
         return orderRepository.findById(id).orElse(null);
     }
@@ -53,6 +58,11 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public List<OrderEntity> getOrderBySeller(UUID sellerId) {
+        return null;
+    }
+
+    @Override
     public void deleteOrderById(UUID id) {
         orderRepository.deleteById(id);
     }
@@ -62,5 +72,10 @@ public class OrderServiceImpl implements OrderService {
         OrderEntity order = orderRepository.findById(id).orElse(null);
         order.setStatus(status);
         orderRepository.save(order);
+    }
+
+    @Override
+    public void updateAllOrderStatus(UUID PayId, String status) {
+
     }
 }
