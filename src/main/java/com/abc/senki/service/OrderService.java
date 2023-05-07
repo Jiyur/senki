@@ -29,5 +29,5 @@ public interface OrderService  {
     void deleteOrderById(UUID id);
     void updateOrderStatus(UUID id, String status);
 
-    void updateAllOrderStatus(UUID PayId,String status);
+    void updateAllOrderStatus(String PayId,String status);
 }

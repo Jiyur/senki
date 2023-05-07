@@ -85,14 +85,18 @@ public class OrderControllerV2 {
         try{
             Payment payment=paypalService.executePayment(paymentId,payerId);
             System.out.println(uri);
+            System.out.println(id);
+            System.out.println(payment.getState());
             if(payment.getState().equals("approved")){
                 Map<String,Object> data=new HashMap<>();
-                orderService.updateAllOrderStatus(UUID.fromString(id),PROCESSING.getMessage());
+                orderService.updateAllOrderStatus(id,PROCESSING.getMessage());
                 //Process order if payment success
                 data.put("payId",id);
                 return ResponseEntity.ok(new SuccessResponse(HttpStatus.OK.value(),"Payment success",data));
+
             }
             throw new BadRequestException("Payment failed");
+
 
         }
         catch (Exception e){

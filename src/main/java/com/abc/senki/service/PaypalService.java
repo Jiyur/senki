@@ -21,6 +21,8 @@ public class PaypalService {
     public static final String SUCCESS_URL_V2 = "/api/v2/order/pay/success/";
     public static final String CANCEL_URL_V2 = "/api/v2/order/pay/cancel/";
     public static final String HOST="https://senki.me";
+//    public static final String HOST="http://localhost:8080";
+
     @Autowired
     private APIContext apiContext;
 

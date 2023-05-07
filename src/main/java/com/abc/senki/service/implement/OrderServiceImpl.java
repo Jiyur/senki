@@ -7,10 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.UUID;
 
 @Service
+@Transactional
 public class OrderServiceImpl implements OrderService {
     @Autowired
     OrderRepository orderRepository;
@@ -75,7 +77,14 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void updateAllOrderStatus(UUID PayId, String status) {
+    public void updateAllOrderStatus(String PayId, String status) {
+        try
+        {
+            orderRepository.updateAllOrderStatus(PayId,status);
+        }
+        catch (Exception e){
+            System.out.println(e.getMessage());
+        }
 
     }
 }
