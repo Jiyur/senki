@@ -101,10 +101,11 @@ public class AuthenticateController {
     @Operation(summary = "Register new user")
     public ResponseEntity<Object> register(@RequestBody @Valid AddNewUserRequest request) {
         request.setPassword(encoder.encode(request.getPassword()));
-
+        //Set user infomation
         UserEntity userEntity = mapper.map(request, UserEntity.class);
         userEntity.setCreateAt(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
-
+        userEntity.setNickName(userEntity.getEmail().replaceAll("@gmail.com", ""));
+        //Check user exists
         if (Boolean.TRUE.equals(userService.existsByEmail(userEntity.getEmail()))) {
             return ResponseEntity.badRequest()
                     .body(ErrorResponse.error("This email already exists", HttpStatus.BAD_REQUEST.value()));
@@ -136,7 +137,7 @@ public class AuthenticateController {
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
         AppUserDetail userDetail = (AppUserDetail) authentication.getPrincipal();
-
+        //Set token
         String accessToken = generateActiveToken(userDetail);
         String refreshToken = generateRefreshToken(userDetail);
         HashMap<String, Object> data = new HashMap<>();
