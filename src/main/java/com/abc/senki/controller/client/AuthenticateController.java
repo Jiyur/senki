@@ -113,7 +113,7 @@ public class AuthenticateController {
         try {
             userService.saveUser(userEntity, "USER");
             HashMap<String, Object> data = new HashMap<>();
-            data.put("user", userEntity.getEmail());
+            data.put("user", userEntity);
             return ResponseEntity
                     .ok(new SuccessResponse(HttpStatus.OK.value(), "Register successfully", data));
         } catch (Exception e) {
