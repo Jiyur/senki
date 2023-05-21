@@ -103,7 +103,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserEntity> getSellerByNickname(String nickname) {
-        return null;
+        return userRepository.getUserByNickname(nickname).stream().toList();
     }
 
 }

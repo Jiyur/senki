@@ -21,7 +21,7 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
     Optional<UserEntity> findByEmail(String email);
     void deleteById(UUID id);
     @Modifying
-    @Query(value = "select * from users where nickname = ?1 AND user_id IN (SELECT user_id IN user_role where role_id=3) "
+    @Query(value = "select * from users where nick_name LIKE ?1 AND user_id IN (SELECT user_id IN user_role where role_id=3) "
             , nativeQuery = true)
     Optional<UserEntity> getUserByNickname(String nickname);
 
