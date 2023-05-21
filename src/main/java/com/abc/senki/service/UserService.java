@@ -26,6 +26,8 @@ public interface UserService {
 
     Boolean existsByEmail(String email);
 
+    List<UserEntity> getSellerByNickname(String nickname);
+
 
 
 

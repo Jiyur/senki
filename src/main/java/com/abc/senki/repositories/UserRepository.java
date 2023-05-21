@@ -20,6 +20,10 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
     Boolean existsByPhone(String phone);
     Optional<UserEntity> findByEmail(String email);
     void deleteById(UUID id);
+    @Modifying
+    @Query(value = "select * from users where nickname = ?1 AND user_id IN (SELECT user_id IN user_role where role_id=3) "
+            , nativeQuery = true)
+    Optional<UserEntity> getUserByNickname(String nickname);
 
     @Modifying
     @Query(value = "update users set status = ?2 where id = ?1", nativeQuery = true)

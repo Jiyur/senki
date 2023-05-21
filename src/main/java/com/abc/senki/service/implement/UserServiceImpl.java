@@ -101,4 +101,9 @@ public class UserServiceImpl implements UserService {
         return userRepository.existsByEmail(email);
     }
 
+    @Override
+    public List<UserEntity> getSellerByNickname(String nickname) {
+        return null;
+    }
+
 }
