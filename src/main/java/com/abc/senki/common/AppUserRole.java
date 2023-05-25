@@ -11,7 +11,9 @@ import static com.abc.senki.common.UserPermission.*;
 
 public enum AppUserRole {
     USER(Sets.newHashSet(USER_READ, USER_WRITE)),
-    ADMIN(Sets.newHashSet(ADMIN_READ, ADMIN_WRITE, USER_READ, USER_WRITE));
+    ADMIN(Sets.newHashSet(ADMIN_READ, ADMIN_WRITE, USER_READ, USER_WRITE)),
+
+    SELLER(Sets.newHashSet(SELLER_READ, SELLER_WRITE, USER_READ, USER_WRITE));
 
     private final Set<UserPermission> permissions;
 

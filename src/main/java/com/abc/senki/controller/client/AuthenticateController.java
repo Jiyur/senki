@@ -16,6 +16,7 @@ import com.abc.senki.security.dto.AppUserDetail;
 import com.abc.senki.security.jwt.JwtUtils;
 import com.abc.senki.service.EmailService;
 import com.abc.senki.service.UserService;
+import com.abc.senki.util.DataUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -112,10 +113,10 @@ public class AuthenticateController {
         }
         try {
             userService.saveUser(userEntity, "USER");
-            HashMap<String, Object> data = new HashMap<>();
-            data.put("user", userEntity);
             return ResponseEntity
-                    .ok(new SuccessResponse(HttpStatus.OK.value(), "Register successfully", data));
+                    .ok(new SuccessResponse(HttpStatus.OK.value(),
+                            "Register successfully",
+                            DataUtil.getData("data",userEntity)));
         } catch (Exception e) {
             return ResponseEntity.badRequest()
                     .body(ErrorResponse.error("Your submition failed, please try again later", HttpStatus.BAD_REQUEST.value()));
