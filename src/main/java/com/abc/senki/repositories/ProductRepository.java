@@ -44,6 +44,10 @@ public interface ProductRepository extends JpaRepository<ProductEntity, UUID>, J
     @Query(value = "SELECT * FROM products WHERE price BETWEEN ?2 AND ?3 AND seller_id=?1",nativeQuery = true)
     Page<ProductEntity> findAllBySeller(UUID sellerId, Pageable pageable, Double minPrice, Double maxPrice);
 
+    @Query(value = "SELECT * FROM products WHERE price BETWEEN ?2 AND ?3 AND seller_id=?1 AND " +
+            "(LOWER(name) LIKE %?4% ",nativeQuery = true)
+    Page<ProductEntity> findBySellerAndKey(UUID sellerId, Pageable pageable, Double minPrice, Double maxPrice,String key);
+
 
 
 }

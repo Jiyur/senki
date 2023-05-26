@@ -71,6 +71,39 @@ public class SellerProductController {
         ));
 
     }
+    @GetMapping
+    @Operation(summary = "Get product by seller and key")
+    public ResponseEntity<Object> searchProductByKeyAndSeller(HttpServletRequest request,
+                                                  @RequestParam(defaultValue = "") String key,
+                                                  @RequestParam(defaultValue = "0") int page,
+                                                  @RequestParam(defaultValue = "20") int size,
+                                                  @RequestParam(defaultValue = "product_id") SortingEnum sort,
+                                                  @RequestParam(defaultValue = "0") Double minPrice,
+                                                  @RequestParam(defaultValue = "10000000") Double maxPrice){
+        if(!SortType().contains(sort.getSort())){
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(ErrorResponse.error(SORTING_TYPE_NOT_FOUND.getMessage(), HttpStatus.CONFLICT.value()));
+        }
+        //Create paging
+        Pageable paging = PageUtil.createPageRequest(page, size, sort.getSort());
+        UserEntity seller=authenticationHandler.userAuthenticate(request);
+        //Put data map
+        HashMap<String,Object> data=new HashMap<>();
+
+        if(key.isEmpty()||key.isBlank()){
+            data.put("list",productService.findAllBySeller(seller.getId(),paging,minPrice,maxPrice));
+        }
+        else{
+            data.put("list",productService.findBySellerAndKey(seller.getId(),paging,minPrice,maxPrice,key));
+        }
+        //Return data
+        return ResponseEntity.ok(new SuccessResponse(
+                HttpStatus.OK.value(),
+                "Get data for seller",
+                data
+        ));
+
+    }
     @PostMapping("")
     @Operation(summary = "Insert product")
     public ResponseEntity<Object> insertProduct(HttpServletRequest servletRequest,

@@ -48,7 +48,8 @@ public class OrderControllerV2 {
 
     @PostMapping("/paypal")
     @Operation(summary = "order with paypal")
-    public ResponseEntity<Object> placePaypalOrder(HttpServletRequest request, @RequestBody List<CartItemRequest> cartList){
+    public ResponseEntity<Object> placePaypalOrder(HttpServletRequest request,
+                                                   @RequestBody List<CartItemRequest> cartList){
         UserEntity user=authenticationHandler.userAuthenticate(request);
         //Init order & process
         String payId=user.getId().toString()+new Date().getTime();
@@ -74,6 +75,29 @@ public class OrderControllerV2 {
                 ));
 
     }
+    @PostMapping("/cod")
+    @Operation(summary = "order with cod")
+    public ResponseEntity<?> placeCODOrder(HttpServletRequest request,
+                                                @RequestBody List<CartItemRequest> cartList){
+        UserEntity user=authenticationHandler.userAuthenticate(request);
+        String payId=user.getId().toString()+new Date().getTime();
+        List<OrderEntity> orderList=OrderUtil.handleCart(cartList,user,payId);
+
+        for (OrderEntity order:orderList
+        ) {
+            order.setMethod("COD");
+            order.setStatus(PENDING.getMessage());
+        }
+        try{
+            orderService.saveOrderList(orderList);
+        }
+        catch (Exception e){
+            return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage(),HttpStatus.BAD_REQUEST.value()));
+        }
+        return ResponseEntity.ok(new SuccessResponse(
+                "Place order success",
+                null));
+    }
     @GetMapping("/pay/success/{id}")
     @Operation(summary = "Paypal payment success")
     public ResponseEntity<Object> successPay(@PathVariable("id") String id,
@@ -84,9 +108,9 @@ public class OrderControllerV2 {
         //Execute payment
         try{
             Payment payment=paypalService.executePayment(paymentId,payerId);
-            System.out.println(uri);
-            System.out.println(id);
-            System.out.println(payment.getState());
+//            System.out.println(uri);
+//            System.out.println(id);
+//            System.out.println(payment.getState());
             if(payment.getState().equals("approved")){
                 Map<String,Object> data=new HashMap<>();
                 orderService.updateAllOrderStatus(id,PROCESSING.getMessage());

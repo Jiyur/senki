@@ -101,6 +101,11 @@ public class ProductServiceImpl implements ProductService {
         return productsRepository.findAllBySeller(sellerId,page,minPrice,maxPrice).stream().toList();
     }
 
+    @Override
+    public List<ProductEntity> findBySellerAndKey(UUID sellerId, Pageable page, Double minPrice, Double maxPrice, String key) {
+        return productsRepository.findBySellerAndKey(sellerId,page,minPrice,maxPrice,key).stream().toList();
+    }
+
 
     public Pageable createPageRequest(int pageNo, int pageSize, String sort) {
         return switch (sort) {

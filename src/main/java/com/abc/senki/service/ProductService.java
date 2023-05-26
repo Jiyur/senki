@@ -32,4 +32,6 @@ public interface ProductService {
 
     List<ProductEntity> findAllBySeller(UUID sellerId, Pageable page, Double minPrice, Double maxPrice);
 
+    List<ProductEntity> findBySellerAndKey(UUID sellerId, Pageable page, Double minPrice, Double maxPrice, String key);
+
 }

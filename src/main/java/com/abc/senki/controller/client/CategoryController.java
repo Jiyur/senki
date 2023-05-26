@@ -3,6 +3,7 @@ package com.abc.senki.controller.client;
 import com.abc.senki.model.payload.response.ErrorResponse;
 import com.abc.senki.model.payload.response.SuccessResponse;
 import com.abc.senki.service.CategoryService;
+import com.abc.senki.util.DataUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,10 +28,9 @@ public class CategoryController {
     @Operation(summary = "get all category")
     public ResponseEntity<Object> getAllCategory() {
         try{
-            HashMap<String,Object> data=new HashMap<>();
-            data.put("category",categoryService.findAll());
             return ResponseEntity
-                    .ok(new SuccessResponse(HttpStatus.OK.value(),"Get all category successfully", data));
+                    .ok(new SuccessResponse(HttpStatus.OK.value(),"Get all category successfully",
+                            DataUtil.getData("category",categoryService.findAll())));
         }
         catch (Exception e){
             return ResponseEntity.badRequest()
@@ -41,10 +41,9 @@ public class CategoryController {
     @Operation(summary = "get all parent category")
     public ResponseEntity<Object> getAllParentCategory() {
         try{
-            HashMap<String,Object> data=new HashMap<>();
-            data.put("category",categoryService.findAllParent());
             return ResponseEntity
-                    .ok(new SuccessResponse(HttpStatus.OK.value(),"Get all category successfully", data));
+                    .ok(new SuccessResponse(HttpStatus.OK.value(),"Get all category successfully",
+                            DataUtil.getData("category",categoryService.findAllParent())));
         }
         catch (Exception e){
             return ResponseEntity.badRequest()
