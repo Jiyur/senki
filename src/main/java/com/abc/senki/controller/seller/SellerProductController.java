@@ -71,7 +71,7 @@ public class SellerProductController {
         ));
 
     }
-    @GetMapping
+    @GetMapping("/search")
     @Operation(summary = "Get product by seller and key")
     public ResponseEntity<Object> searchProductByKeyAndSeller(HttpServletRequest request,
                                                   @RequestParam(defaultValue = "") String key,
