@@ -27,6 +27,7 @@ public class ImageController {
     ProductService productService;
     @Autowired
     ImageStorageService imageStorageService;
+    @CrossOrigin
     @PostMapping(value = "/upload/{id}",consumes = {"multipart/form-data"},produces = {"application/json"})
     @Operation(summary = "update image list for product")
     public ResponseEntity<Object> uploadImgInProduct(@RequestPart("files") MultipartFile[] files, @PathVariable String id,
