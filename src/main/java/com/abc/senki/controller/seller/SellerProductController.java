@@ -5,6 +5,7 @@ import com.abc.senki.common.SortingEnum;
 import com.abc.senki.handler.AuthenticationHandler;
 import com.abc.senki.mapping.ProductMapping;
 import com.abc.senki.model.entity.CategoryEntity;
+import com.abc.senki.model.entity.OrderEntity;
 import com.abc.senki.model.entity.ProductEntity;
 import com.abc.senki.model.entity.UserEntity;
 import com.abc.senki.model.payload.request.ProductRequest.AddNewProductRequest;
@@ -12,7 +13,9 @@ import com.abc.senki.model.payload.response.ErrorResponse;
 import com.abc.senki.model.payload.response.SuccessResponse;
 import com.abc.senki.repositories.BrandService;
 import com.abc.senki.service.CategoryService;
+import com.abc.senki.service.OrderService;
 import com.abc.senki.service.ProductService;
+import com.abc.senki.util.DataUtil;
 import com.abc.senki.util.PageUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -41,6 +44,9 @@ public class SellerProductController {
 
     @Autowired
     private BrandService brandService;
+
+    @Autowired
+    private OrderService orderService;
     @Autowired
     AuthenticationHandler authenticationHandler;
 
@@ -140,6 +146,19 @@ public class SellerProductController {
         productService.enableProduct(id);
         return ResponseEntity
                 .ok(new SuccessResponse(HttpStatus.OK.value(),"Disable product successfully", null));
+
+    }
+    @GetMapping("/order")
+    @Operation(summary = "Get order by seller")
+    public ResponseEntity<Object> listOrderBySeller(HttpServletRequest request,
+                                                    @RequestParam(required = false,defaultValue = "0") int pageNo,
+                                                    @RequestParam(required = false,defaultValue = "6") int pageSize){
+        Pageable pageable= PageUtil.createPageRequestOrder(pageNo,pageSize);
+        UserEntity seller=authenticationHandler.userAuthenticate(request);
+        List<OrderEntity> orderList=orderService.findAllBySellerId(seller.getId(),pageable);
+        return ResponseEntity.ok(DataUtil
+                .getData(
+                        "list",orderList));
 
     }
     private List<String> SortType(){

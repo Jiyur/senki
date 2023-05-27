@@ -30,4 +30,6 @@ public interface OrderService  {
     void updateOrderStatus(UUID id, String status);
 
     void updateAllOrderStatus(String PayId,String status);
+
+    List<OrderEntity> findAllBySellerId(UUID sellerId,Pageable pageable);
 }

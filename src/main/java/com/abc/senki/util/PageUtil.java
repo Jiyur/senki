@@ -14,4 +14,7 @@ public class PageUtil {
             default -> PageRequest.of(pageNo, pageSize, Sort.by(sort).descending());
         };
     }
+    public static Pageable createPageRequestOrder(int pageNo, int pageSize) {
+        return PageRequest.of(pageNo, pageSize);
+    }
 }

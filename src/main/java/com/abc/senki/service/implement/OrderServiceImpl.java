@@ -72,7 +72,10 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void updateOrderStatus(UUID id, String status) {
         OrderEntity order = orderRepository.findById(id).orElse(null);
-        order.setStatus(status);
+        if (order != null) {
+            order.setStatus(status);
+        }
+        assert order != null;
         orderRepository.save(order);
     }
 
@@ -85,6 +88,12 @@ public class OrderServiceImpl implements OrderService {
         catch (Exception e){
             System.out.println(e.getMessage());
         }
+
+    }
+
+    @Override
+    public List<OrderEntity> findAllBySellerId(UUID sellerId,Pageable pageable) {
+        return orderRepository.findAllBySellerId(sellerId,pageable);
 
     }
 }
