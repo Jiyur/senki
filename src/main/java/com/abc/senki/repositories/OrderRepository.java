@@ -28,8 +28,8 @@ public interface OrderRepository extends JpaRepository<OrderEntity,UUID> {
     @Query(value = "select * from orders o " +
             "where o.address_id " +
             "in (SELECT id from order_address where province=?1)" +
-            " AND o.status NOT LIKE 'PENDING'",nativeQuery = true)
-    List<OrderEntity> findAllByProvince(Pageable pageable,String provinceId);
+            " AND o.status LIKE ?2",nativeQuery = true)
+    List<OrderEntity> findAllByProvinceAndStatus(Pageable pageable,String provinceId,String status);
 
 
 }

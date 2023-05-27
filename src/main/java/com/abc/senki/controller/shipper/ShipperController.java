@@ -9,6 +9,7 @@ import com.abc.senki.service.OrderService;
 import com.abc.senki.util.DataUtil;
 import com.abc.senki.util.PageUtil;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +26,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/shipper")
+@SecurityRequirement(name = "bearerAuth")
 public class ShipperController {
     @Autowired
     OrderService orderService;
@@ -43,7 +45,8 @@ public class ShipperController {
             return ResponseEntity.badRequest().body(new ErrorResponse("Cant get shipper info", HttpStatus.BAD_REQUEST.value()));
         }
         Pageable pageable=PageUtil.createPageRequestOrder(pageNo,pageSize,sort);
-        List<OrderEntity> orderList=orderService.findAllByProvinceAndValid(pageable,shipper.getAddress().getProvince().getId());
+        String province=shipper.getAddress().getProvince().getId();
+        List<OrderEntity> orderList=orderService.findAllByProvinceAndValid(pageable,province,"processing");
         return ResponseEntity.ok(new SuccessResponse("Get data success",
                 DataUtil.getData("list",orderList)));
     }

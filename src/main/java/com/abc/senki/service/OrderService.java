@@ -33,5 +33,5 @@ public interface OrderService  {
 
     List<OrderEntity> findAllBySellerId(UUID sellerId,Pageable pageable);
 
-    List<OrderEntity> findAllByProvinceAndValid(Pageable pageable,String province);
+    List<OrderEntity> findAllByProvinceAndValid(Pageable pageable, String province,String status);
 }
