@@ -96,4 +96,9 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.findAllBySellerId(sellerId,pageable);
 
     }
+
+    @Override
+    public List<OrderEntity> findAllByProvinceAndValid(Pageable pageable, String province) {
+        return orderRepository.findAllByProvince(pageable, province);
+    }
 }

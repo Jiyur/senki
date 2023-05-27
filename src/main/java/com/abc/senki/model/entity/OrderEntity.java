@@ -50,6 +50,9 @@ public class OrderEntity {
     @Column(name = "pay_id")
     private String payId;
 
+    @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @JoinColumn(name="\"shipper_id\"")
+    private UserEntity shipper;
     public OrderEntity(UserEntity user) {
         this.id = UUID.randomUUID();
         this.user = user;

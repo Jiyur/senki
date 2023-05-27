@@ -25,5 +25,12 @@ public interface OrderRepository extends JpaRepository<OrderEntity,UUID> {
     @Query(value = "update orders SET status=?2 where pay_id=?1",nativeQuery = true)
     void updateAllOrderStatus(String payId,String status);
 
+    @Modifying
+    @Query(value = "select * from orders o " +
+            "where o.address_id " +
+            "in (SELECT id from order_address where province=?1)" +
+            " AND o.status NOT LIKE 'PENDING'",nativeQuery = true)
+    List<OrderEntity> findAllByProvince(Pageable pageable,String provinceId);
+
 
 }
