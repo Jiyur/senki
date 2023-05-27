@@ -77,6 +77,29 @@ public class SellerProductController {
         ));
 
     }
+    @PutMapping("/{id}")
+    @Operation(summary = "Update product by id")
+    public ResponseEntity<Object> updateProduct(@PathVariable("id") String id,
+                                                @RequestBody AddNewProductRequest request){
+        try{
+            ProductEntity product=productService.findById(id);
+            product.setInfo(request.getName(), request.getDescription(), request.getPrice(), request.getStock());
+            if(!product.getProductCategory().getId().toString().equals(request.getCate_id())){
+                CategoryEntity categoryEntity=categoryService.findById(request.getCate_id());
+                product.setProductCategory(categoryEntity);
+            }
+            if(request.getBrand_id().length()>0){
+                product.setBrand(brandService.getBrandById(Integer.parseInt(request.getBrand_id())));
+            }
+            productService.saveProduct(product);
+            return ResponseEntity
+                    .ok(new SuccessResponse(HttpStatus.OK.value(),"Update product successfully", null));
+        }
+        catch (Exception e){
+            return ResponseEntity.badRequest()
+                    .body(ErrorResponse.error(ERROR_TRY_AGAIN.getMessage(), HttpStatus.BAD_REQUEST.value()));
+        }
+    }
     @GetMapping("/search")
     @Operation(summary = "Get product by seller and key")
     public ResponseEntity<Object> searchProductByKeyAndSeller(HttpServletRequest request,
