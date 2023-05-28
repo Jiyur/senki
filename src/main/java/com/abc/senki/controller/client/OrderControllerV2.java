@@ -59,7 +59,7 @@ public class OrderControllerV2 {
              ) {
             total+=order.getTotal();
             order.setMethod("PAYPAL");
-            order.setStatus(PENDING.getMessage());
+            order.setStatus(PROCESSING.getMessage());
         }
         //Generate paypal link
         String link=paypalService.paypalPaymentV2(payId,request,total);
@@ -86,7 +86,7 @@ public class OrderControllerV2 {
         for (OrderEntity order:orderList
         ) {
             order.setMethod("COD");
-            order.setStatus(PENDING.getMessage());
+            order.setStatus(PROCESSING.getMessage());
         }
         try{
             orderService.saveOrderList(orderList);
