@@ -50,6 +50,8 @@ public class OrderEntity {
     @Column(name = "pay_id")
     private String payId;
 
+    private String note;
+
     @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @JoinColumn(name="\"shipper_id\"")
     private UserEntity shipper;
