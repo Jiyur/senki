@@ -171,20 +171,7 @@ public class SellerProductController {
                 .ok(new SuccessResponse(HttpStatus.OK.value(),"Disable product successfully", null));
 
     }
-    @GetMapping("/order")
-    @Operation(summary = "Get order by seller")
-    public ResponseEntity<Object> listOrderBySeller(HttpServletRequest request,
-                                                    @RequestParam(required = false,defaultValue = "0") int pageNo,
-                                                    @RequestParam(required = false,defaultValue = "6") int pageSize,
-                                                    @RequestParam(required = false,defaultValue = "createdAt") String sort){
-        Pageable pageable= PageUtil.createPageRequestOrder(pageNo,pageSize,sort);
-        UserEntity seller=authenticationHandler.userAuthenticate(request);
-        List<OrderEntity> orderList=orderService.findAllBySellerId(seller.getId(),pageable);
-        return ResponseEntity.ok(DataUtil
-                .getData(
-                        "list",orderList));
 
-    }
     private List<String> SortType(){
         List<String> list = new ArrayList<>();
         list.add("id");
