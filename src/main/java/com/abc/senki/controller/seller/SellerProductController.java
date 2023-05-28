@@ -176,7 +176,7 @@ public class SellerProductController {
     public ResponseEntity<Object> listOrderBySeller(HttpServletRequest request,
                                                     @RequestParam(required = false,defaultValue = "0") int pageNo,
                                                     @RequestParam(required = false,defaultValue = "6") int pageSize,
-                                                    @RequestParam(required = false,defaultValue = "creatAt") String sort){
+                                                    @RequestParam(required = false,defaultValue = "createdAt") String sort){
         Pageable pageable= PageUtil.createPageRequestOrder(pageNo,pageSize,sort);
         UserEntity seller=authenticationHandler.userAuthenticate(request);
         List<OrderEntity> orderList=orderService.findAllBySellerId(seller.getId(),pageable);
