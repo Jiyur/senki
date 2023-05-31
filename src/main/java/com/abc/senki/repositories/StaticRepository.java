@@ -10,6 +10,6 @@ import java.util.UUID;
 public interface StaticRepository extends PagingAndSortingRepository<RevenueDTO, UUID> {
     List<RevenueDTO> findAllBySeller(UUID seller);
 
-    @Query(value = "select * from static_view where seller=?1 and substring(dtime from 1 for 4) = ?2",nativeQuery = true)
+    @Query(value = "select distinct * from static_view where seller=?1 and substring(dtime from 1 for 4) = ?2",nativeQuery = true)
     List<RevenueDTO> findAllByYear(UUID sellerId,String year);
 }
