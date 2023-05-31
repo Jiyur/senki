@@ -59,7 +59,7 @@ public class OrderControllerV2 {
              ) {
             total+=order.getTotal();
             order.setMethod("PAYPAL");
-            order.setStatus(PROCESSING.getMessage());
+            order.setStatus(PENDING.getMessage());
         }
         //Generate paypal link
         String link=paypalService.paypalPaymentV2(payId,request,total);

@@ -68,4 +68,7 @@ public class SellerOrderController {
                         "data",orderList));
 
     }
+//    @GetMapping("static")
+//    @Operation(summary = "Get revenue static")
+
 }
