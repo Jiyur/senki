@@ -7,10 +7,7 @@ import lombok.Setter;
 import net.jcip.annotations.Immutable;
 import org.hibernate.annotations.Subselect;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.UUID;
 
@@ -18,19 +15,20 @@ import java.util.UUID;
 @Table(name = "static_view")
 @Getter
 @NoArgsConstructor
+@IdClass(RevenueDTO.class)
 @AllArgsConstructor
 public class RevenueDTO implements Serializable {
-
     @Id
     @Column(name = "seller",insertable = false,updatable = false)
     private UUID seller;
 
-
+    @Id
     private Double revenue;
 
+    @Id
     @Column(name = "total_order",insertable = false,updatable = false)
     private Integer totalOrder;
-
+    @Id
     private String dtime;
 
 }
