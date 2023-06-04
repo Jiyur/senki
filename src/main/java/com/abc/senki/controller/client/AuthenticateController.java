@@ -122,6 +122,30 @@ public class AuthenticateController {
                     .body(ErrorResponse.error("Your submition failed, please try again later", HttpStatus.BAD_REQUEST.value()));
         }
     }
+    @PostMapping("register-shipper")
+    @Operation(summary = "Register new user")
+    public ResponseEntity<Object> registerShipper(@RequestBody @Valid AddNewUserRequest request) {
+        request.setPassword(encoder.encode(request.getPassword()));
+        //Set user infomation
+        UserEntity userEntity = mapper.map(request, UserEntity.class);
+        userEntity.setCreateAt(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
+        userEntity.setNickName(userEntity.getEmail().replaceAll("@gmail.com", ""));
+        //Check user exists
+        if (Boolean.TRUE.equals(userService.existsByEmail(userEntity.getEmail()))) {
+            return ResponseEntity.badRequest()
+                    .body(ErrorResponse.error("This email already exists", HttpStatus.BAD_REQUEST.value()));
+        }
+        try {
+            userService.saveUser(userEntity, "SHIPPER");
+            return ResponseEntity
+                    .ok(new SuccessResponse(HttpStatus.OK.value(),
+                            "Register successfully",
+                            DataUtil.getData("data",userEntity)));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(ErrorResponse.error("Your submition failed, please try again later", HttpStatus.BAD_REQUEST.value()));
+        }
+    }
 
     @PostMapping("login")
     @Operation(summary = "Login user")
