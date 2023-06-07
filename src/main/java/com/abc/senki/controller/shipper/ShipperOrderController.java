@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -89,4 +90,23 @@ public class ShipperOrderController {
         return ResponseEntity.ok(new SuccessResponse("Pick order success", null));
 
     }
+    @GetMapping("{id}")
+    @Operation(summary = "Get order by id")
+    public ResponseEntity<Object> getOrderDetailById(@PathVariable UUID id, HttpServletRequest request){
+        try{
+
+            OrderEntity order=orderService.getOrderById(id);
+            if(order==null){
+                return ResponseEntity.badRequest()
+                        .body(new ErrorResponse("Order not found", HttpStatus.BAD_REQUEST.value()));
+            }
+
+            return ResponseEntity.ok(new SuccessResponse("Get data success",DataUtil.getData("data",order)));
+        }
+        catch (Exception e){
+            return ResponseEntity.badRequest()
+                    .body(new ErrorResponse("Can't get the specified order", HttpStatus.BAD_REQUEST.value()));
+        }
+    }
 }
+
