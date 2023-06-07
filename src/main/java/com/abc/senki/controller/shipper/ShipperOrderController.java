@@ -5,6 +5,7 @@ import com.abc.senki.model.entity.OrderEntity;
 import com.abc.senki.model.entity.UserEntity;
 import com.abc.senki.model.payload.request.ShipperRequest.ShipperOrderMessage;
 import com.abc.senki.model.payload.response.ErrorResponse;
+import com.abc.senki.model.payload.response.PickOrderResponse;
 import com.abc.senki.model.payload.response.SuccessResponse;
 import com.abc.senki.service.OrderService;
 import com.abc.senki.util.DataUtil;
@@ -64,12 +65,18 @@ public class ShipperOrderController {
             OrderEntity order=orderService.getOrderById(orderId);
             order.setShipper(shipper);
             orderService.saveOrder(order);
+            //Set response data
+            PickOrderResponse pickOrderResponse=new PickOrderResponse();
+            pickOrderResponse.setOrderId(order.getId());
+            pickOrderResponse.setSellerId(order.getSellerId());
+            return ResponseEntity.ok(new SuccessResponse("Pick order success",
+                    DataUtil.getData("data",pickOrderResponse)));
+
         }
         catch (Exception e){
             return ResponseEntity.badRequest()
                     .body(new ErrorResponse(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
         }
-        return ResponseEntity.ok(new SuccessResponse("Pick order success", null));
     }
     @PutMapping("/{id}")
     @Operation(summary = "Update order status/return order/cancel order")
