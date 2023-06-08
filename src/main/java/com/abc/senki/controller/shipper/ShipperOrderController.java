@@ -69,6 +69,7 @@ public class ShipperOrderController {
             PickOrderResponse pickOrderResponse=new PickOrderResponse();
             pickOrderResponse.setOrderId(order.getId());
             pickOrderResponse.setSellerId(order.getSellerId());
+            pickOrderResponse.setBuyerId(order.getUser().getId());
             return ResponseEntity.ok(new SuccessResponse("Pick order success",
                     DataUtil.getData("data",pickOrderResponse)));
 

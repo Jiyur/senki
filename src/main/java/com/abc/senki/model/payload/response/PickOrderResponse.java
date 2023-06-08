@@ -12,4 +12,5 @@ import java.util.UUID;
 public class PickOrderResponse {
     private UUID orderId;
     private UUID sellerId;
+    private UUID buyerId;
 }
