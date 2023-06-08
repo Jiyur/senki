@@ -32,6 +32,9 @@ public interface OrderService  {
     void updateAllOrderStatus(String PayId,String status);
 
     List<OrderEntity> findAllBySellerId(UUID sellerId,Pageable pageable);
+    List<OrderEntity> findAllByShipper(UserEntity shipper,Pageable pageable);
+
+    List<OrderEntity> findAllByShipperAndStatus(UserEntity shipper,String status,Pageable pageable);
 
     List<OrderEntity> findAllByProvinceAndValid(Pageable pageable, String province,String status);
 }

@@ -19,9 +19,10 @@ import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import static com.abc.senki.common.OrderStatus.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -64,6 +65,7 @@ public class ShipperOrderController {
         try{
             OrderEntity order=orderService.getOrderById(orderId);
             order.setShipper(shipper);
+            order.setMethod(SHIPPING.getMessage());
             orderService.saveOrder(order);
             //Set response data
             PickOrderResponse pickOrderResponse=new PickOrderResponse();
@@ -115,6 +117,30 @@ public class ShipperOrderController {
             return ResponseEntity.badRequest()
                     .body(new ErrorResponse("Can't get the specified order", HttpStatus.BAD_REQUEST.value()));
         }
+    }
+    @GetMapping("/history")
+    @Operation(summary = "Get all order history of shipper")
+    public ResponseEntity<Object> getOrderHistory(HttpServletRequest request,
+                                                  @RequestParam(required = false,defaultValue = "0") int pageNo,
+                                                  @RequestParam(required = false,defaultValue = "6") int pageSize,
+                                                  @RequestParam(required = false,defaultValue = "created_at") String sort,
+                                                  @RequestParam(required = false,defaultValue = "") String status){
+        UserEntity shipper=authenticationHandler.userAuthenticate(request);
+        if(shipper==null){
+            return ResponseEntity.badRequest()
+                    .body(new ErrorResponse("Cant get shipper info", HttpStatus.BAD_REQUEST.value()));
+        }
+        Pageable pageable=PageUtil.createPageRequestOrder(pageNo,pageSize,sort);
+        //Get all order near shipper with processing status
+        List<OrderEntity> orderList=new ArrayList<>();
+        if(status.isEmpty()||status.isBlank()){
+            orderList=orderService.findAllByShipper(shipper,pageable);
+        }
+        else{
+            orderList=orderService.findAllByShipperAndStatus(shipper,status,pageable);
+        }
+        return ResponseEntity.ok(new SuccessResponse("Get data success",
+                DataUtil.getData("list",orderList)));
     }
 }
 

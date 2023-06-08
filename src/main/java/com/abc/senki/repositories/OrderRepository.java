@@ -32,5 +32,9 @@ public interface OrderRepository extends JpaRepository<OrderEntity,UUID> {
             " AND o.shipper_id is null",nativeQuery = true)
     List<OrderEntity> findAllByProvinceAndStatus(Pageable pageable,String provinceId,String status);
 
+    List<OrderEntity> findAllByShipperAndStatus(UserEntity shipper,String status,Pageable pageable);
+
+    List<OrderEntity> findAllByShipper(UserEntity shipper,Pageable pageable);
+
 
 }

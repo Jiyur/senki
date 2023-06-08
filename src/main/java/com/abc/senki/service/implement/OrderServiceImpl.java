@@ -3,6 +3,7 @@ package com.abc.senki.service.implement;
 import com.abc.senki.model.entity.*;
 import com.abc.senki.repositories.OrderRepository;
 import com.abc.senki.service.OrderService;
+import com.paypal.api.payments.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -95,6 +96,16 @@ public class OrderServiceImpl implements OrderService {
     public List<OrderEntity> findAllBySellerId(UUID sellerId,Pageable pageable) {
         return orderRepository.findAllBySellerId(sellerId,pageable);
 
+    }
+
+    @Override
+    public List<OrderEntity> findAllByShipper(UserEntity shipper, Pageable pageable) {
+        return orderRepository.findAllByShipper(shipper,pageable);
+    }
+
+    @Override
+    public List<OrderEntity> findAllByShipperAndStatus(UserEntity shipper,String status,Pageable pageable){
+        return orderRepository.findAllByShipperAndStatus(shipper,status,pageable);
     }
 
     @Override
