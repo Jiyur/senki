@@ -129,7 +129,9 @@ public class ShipperOrderController {
                                                   @RequestParam(required = false,defaultValue = "created_at") String sort
                                                   ){
         UserEntity shipper=authenticationHandler.userAuthenticate(request);
-
+        if(sort.equals("created_at")){
+            sort="createdAt";
+        }
         if(shipper==null){
             return ResponseEntity.badRequest()
                     .body(new ErrorResponse("Cant get shipper info", HttpStatus.BAD_REQUEST.value()));
