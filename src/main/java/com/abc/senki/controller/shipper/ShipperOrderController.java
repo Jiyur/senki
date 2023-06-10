@@ -44,6 +44,10 @@ public class ShipperOrderController {
                                                         @RequestParam(required = false,defaultValue = "6") int pageSize,
                                                         @RequestParam(required = false,defaultValue = "created_at") String sort){
         UserEntity shipper=authenticationHandler.userAuthenticate(request);
+        if(sort.equals("created_at")){
+            sort="createdAt";
+        }
+
         if(shipper==null){
             return ResponseEntity.badRequest().body(new ErrorResponse("Cant get shipper info", HttpStatus.BAD_REQUEST.value()));
         }
@@ -123,9 +127,13 @@ public class ShipperOrderController {
     public ResponseEntity<Object> getOrderHistory(HttpServletRequest request,
                                                   @RequestParam(required = false,defaultValue = "0") int pageNo,
                                                   @RequestParam(required = false,defaultValue = "6") int pageSize,
-                                                  @RequestParam(required = false,defaultValue = "created_at") String sort,
-                                                  @RequestParam(required = false,defaultValue = "") String status){
+                                                  @RequestParam(required = false,defaultValue = "") String status,
+                                                  @RequestParam(required = false,defaultValue = "created_at") String sort
+                                                  ){
         UserEntity shipper=authenticationHandler.userAuthenticate(request);
+        if(sort.equals("created_at")){
+            sort="createdAt";
+        }
         if(shipper==null){
             return ResponseEntity.badRequest()
                     .body(new ErrorResponse("Cant get shipper info", HttpStatus.BAD_REQUEST.value()));
