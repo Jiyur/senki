@@ -67,7 +67,7 @@ public class ShipperOrderController {
         try{
             OrderEntity order=orderService.getOrderById(orderId);
             order.setShipper(shipper);
-            order.setMethod(SHIPPING.getMessage());
+            order.setStatus(SHIPPING.getMessage());
             orderService.saveOrder(order);
             //Set response data
             PickOrderResponse pickOrderResponse=new PickOrderResponse();
