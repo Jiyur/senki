@@ -25,6 +25,7 @@ public class CustomOauth2Service extends DefaultOAuth2UserService {
             user.setStatus(true);
             user.setFullName(name);
             user.setImg(picture);
+            user.setActive(true);
 
             userService.saveUser(user,"USER");
         }

@@ -104,6 +104,7 @@ public class AuthenticateController {
         request.setPassword(encoder.encode(request.getPassword()));
         //Set user infomation
         UserEntity userEntity = mapper.map(request, UserEntity.class);
+        userEntity.setActive(true);
         userEntity.setCreateAt(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
         userEntity.setNickName(userEntity.getEmail().replaceAll("@gmail.com", ""));
         //Check user exists
@@ -128,6 +129,7 @@ public class AuthenticateController {
         request.setPassword(encoder.encode(request.getPassword()));
         //Set user infomation
         UserEntity userEntity = mapper.map(request, UserEntity.class);
+        userEntity.setActive(true);
         userEntity.setCreateAt(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
         userEntity.setNickName(userEntity.getEmail().replaceAll("@gmail.com", ""));
         //Check user exists
@@ -154,7 +156,8 @@ public class AuthenticateController {
             return ResponseEntity.badRequest().body(ErrorResponse.error("This email not valid", HttpStatus.BAD_REQUEST.value()));
         }
         UserEntity loginUser = userService.findByEmail(user.getEmail());
-        if (!encoder.matches(user.getPassword(), loginUser.getPassword())) {
+
+        if (!encoder.matches(user.getPassword(), loginUser.getPassword())|| loginUser.isActive()==false) {
             return ResponseEntity.badRequest().body(ErrorResponse.error("Wrong password", HttpStatus.BAD_REQUEST.value()));
         }
         Authentication authentication = authenticationManager.authenticate(
@@ -187,7 +190,7 @@ public class AuthenticateController {
             }
             String email = jwtUtils.getUserNameFromJwtToken(token);
             UserEntity user = userService.findByEmail(email);
-            if (user == null) {
+            if (user == null||user.isActive()==false) {
                 throw new RecordNotFoundException("Not found, please register again");
             }
             AppUserDetail userDetails = AppUserDetail.build(user);
