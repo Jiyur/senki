@@ -18,7 +18,7 @@ public interface UserService {
     Boolean existsByPhone(String phone);
     UserEntity saveInfo(UserEntity user);
     UserEntity findByEmail(String email);
-    UserEntity updateActive(UserEntity user);
+    UserEntity updateActive(UserEntity user,Boolean active);
     void setStatus(String id,Boolean status);
     void deleteById(String id);
 

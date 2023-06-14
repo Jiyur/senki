@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -67,8 +68,20 @@ public class AdminUserController {
     @Operation(summary = "Disable user")
     public ResponseEntity<Object> disableUser(@PathVariable("id") String id){
         try{
-            userService.setStatus(id,false);
+            userService.updateActive(userService.findById(UUID.fromString(id)),false);
             return ResponseEntity.ok(new SuccessResponse(HttpStatus.OK.value(),"Disable user successfully",null));
+        }
+        catch (Exception e){
+            return ResponseEntity.badRequest()
+                    .body(ErrorResponse.error(e.toString(),HttpStatus.BAD_REQUEST.value()));
+        }
+    }
+    @PatchMapping("user/{id}")
+    @Operation(summary = "Enable user")
+    public ResponseEntity<Object> enableUser(@PathVariable("id") String id){
+        try{
+            userService.updateActive(userService.findById(UUID.fromString(id)),true);
+            return ResponseEntity.ok(new SuccessResponse(HttpStatus.OK.value(),"Enable user successfully",null));
         }
         catch (Exception e){
             return ResponseEntity.badRequest()

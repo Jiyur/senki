@@ -66,8 +66,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserEntity updateActive(UserEntity user) {
-        user.setActive(true);
+    public UserEntity updateActive(UserEntity user,Boolean active) {
+        user.setActive(active);
         return userRepository.save(user);
     }
     @Override
