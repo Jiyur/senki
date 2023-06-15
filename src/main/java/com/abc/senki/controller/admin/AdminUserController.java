@@ -64,7 +64,7 @@ public class AdminUserController {
                     .body(ErrorResponse.error(e.toString(),HttpStatus.BAD_REQUEST.value()));
         }
     }
-    @PatchMapping("user/{id}")
+    @PatchMapping("user/disable/{id}")
     @Operation(summary = "Disable user")
     public ResponseEntity<Object> disableUser(@PathVariable("id") String id){
         try{
@@ -76,7 +76,7 @@ public class AdminUserController {
                     .body(ErrorResponse.error(e.toString(),HttpStatus.BAD_REQUEST.value()));
         }
     }
-    @PatchMapping("user/{id}")
+    @PatchMapping("user/enable/{id}")
     @Operation(summary = "Enable user")
     public ResponseEntity<Object> enableUser(@PathVariable("id") String id){
         try{
