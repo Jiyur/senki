@@ -102,12 +102,14 @@ public class OrderControllerV2 {
     @Operation(summary = "Paypal payment success")
     public ResponseEntity<Object> successPay(@PathVariable("id") String id,
                                              @RequestParam("paymentId") String paymentId,
+                                             @RequestParam("redirectURI") String uri,
                                              @RequestParam("PayerID") String payerId,
                                              HttpServletResponse response
                                             ){
         //Execute payment
         try{
             Payment payment=paypalService.executePayment(paymentId,payerId);
+
 
             if(payment.getState().equals("approved")){
                 orderService.updateAllOrderStatus(id,PROCESSING.getMessage());
