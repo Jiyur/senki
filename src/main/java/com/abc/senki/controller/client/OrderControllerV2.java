@@ -101,9 +101,9 @@ public class OrderControllerV2 {
     @GetMapping("/pay/success/{id}")
     @Operation(summary = "Paypal payment success")
     public ResponseEntity<Object> successPay(@PathVariable("id") String id,
-                                             @RequestParam("paymentId") String paymentId,
-                                             @RequestParam("redirectURI") String uri,
-                                             @RequestParam("PayerID") String payerId,
+                                             @RequestParam(name = "paymentId") String paymentId,
+                                             @RequestParam(name = "redirectURI") String uri,
+                                             @RequestParam(name = "PayerID") String payerId,
                                              HttpServletResponse response
                                             ){
         //Execute payment
