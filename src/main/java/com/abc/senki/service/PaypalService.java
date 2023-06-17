@@ -21,12 +21,14 @@ public class PaypalService {
     public static final String SUCCESS_URL_V2 = "/api/v2/order/pay/success/";
     public static final String CANCEL_URL_V2 = "/api/v2/order/pay/cancel/";
 
-    public static final String SUCCESS_URL_LICENSE="/api/seller-license/pay/success/";
+    public static final String SUCCESS_URL_LICENSE="/api/license/pay/success/";
 
-    public static final String CANCEL_URL_LICENSE="/api/seller-license/pay/cancel/";
+    public static final String CANCEL_URL_LICENSE="/api/license/pay/cancel/";
 
     public static final String HOST="https://senki.me";
 //    public static final String HOST="http://localhost:8080";
+
+    public static final String DIRECT_URL="http://localhost:3000";
 
     @Autowired
     private APIContext apiContext;
@@ -141,12 +143,9 @@ public class PaypalService {
     }
     public String paypalPaymentV2(String payId,HttpServletRequest request,Double total){
         try{
-            String host=request.getHeader("origin");
-            URI uri=new URI(host);
             Payment payment = createPayment(total,"USD", "paypal", "sale",
                     HOST+CANCEL_URL_V2+payId,
-                    HOST+SUCCESS_URL_V2+payId+"?redirectURI="
-                            +request.getHeader("origin"));
+                    HOST+SUCCESS_URL_V2+payId);
             for(Links link:payment.getLinks()){
                 if(link.getRel().equals("approval_url")){
                     return link.getHref();
@@ -154,18 +153,15 @@ public class PaypalService {
             }
         } catch (PayPalRESTException e) {
         e.printStackTrace();
-        } catch (URISyntaxException e) {
-             throw new RuntimeException(e);
-         }
+        }
         return null;
     }
-    public String paypalPaymentSellLicense(String userId,HttpServletRequest request,Double total){
+    public String paypalPaymentSellLicense(String userId,HttpServletRequest request,Double total) throws URISyntaxException {
         try{
             Payment payment=createPayment(total,"USD","paypal","sale",
                     HOST+CANCEL_URL_LICENSE+userId+"&redirectURI="
                             +request.getHeader("origin"),
-                    HOST+SUCCESS_URL_LICENSE+userId+"&redirectURI="
-                            +request.getHeader("origin"));
+                    HOST+SUCCESS_URL_LICENSE+userId);
             for(Links link:payment.getLinks()){
                 if(link.getRel().equals("approval_url")){
                     return link.getHref();

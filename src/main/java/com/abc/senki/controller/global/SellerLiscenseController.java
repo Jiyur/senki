@@ -5,6 +5,7 @@ import com.abc.senki.model.entity.RoleEntity;
 import com.abc.senki.model.entity.UserEntity;
 import com.abc.senki.model.payload.response.ErrorResponse;
 import com.abc.senki.model.payload.response.SuccessResponse;
+import com.abc.senki.repositories.RoleRepository;
 import com.abc.senki.service.PaypalService;
 import com.abc.senki.service.UserService;
 import com.abc.senki.util.DataUtil;
@@ -21,14 +22,13 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
-@RequestMapping("/api/seller-license")
+@RequestMapping("/api/license")
 @SecurityRequirement(name = "bearerAuth")
 @Slf4j
 public class SellerLiscenseController {
@@ -37,13 +37,18 @@ public class SellerLiscenseController {
     private UserService userService;
 
     @Autowired
+    private RoleRepository roleRepository;
+
+    @Autowired
     private AuthenticationHandler authenticationHandler;
     @Autowired
     private PaypalService paypalService;
 
+    private final static String REDIRECT_HOST="http://localhost:3000/seller/payment/success/";
+
     @GetMapping("")
     @Operation(summary = "Create seller license")
-    public ResponseEntity<Object> createSellerLicense(HttpServletRequest request){
+    public ResponseEntity<Object> createSellerLicense(HttpServletRequest request) throws URISyntaxException {
         UserEntity userEntity=authenticationHandler.userAuthenticate(request);
         //Check if user is seller or not
         if(isPresentRole(userEntity))
@@ -67,7 +72,6 @@ public class SellerLiscenseController {
     @Operation(summary = "Paypal success")
     public ResponseEntity<Object> liscenseSuccess(@PathVariable("id") String userId,
                                                   @RequestParam("paymentId") String paymentId,
-                                                  @RequestParam("redirectURI") String uri,
                                                   @RequestParam("PayerID") String payerId,
                                                   HttpServletResponse response
                                                   ) throws PayPalRESTException, IOException {
@@ -78,13 +82,25 @@ public class SellerLiscenseController {
         //Check if user is seller or not
         Payment payment=paypalService.executePayment(paymentId,payerId);
         if(payment.getState().equals("approved")){
+            Optional<RoleEntity> role=roleRepository.findByName("SELLER");
+            if(role.isPresent()){
+                if(userEntity.getRoles()==null){
+                    Set<RoleEntity> roleSet=new HashSet<>();
+                    roleSet.add(role.get());
+                    userEntity.setRoles(roleSet);
+                }
+                else{
+                    userEntity.getRoles().add(role.get());
+                }
+            }
             if(userEntity.getSellExpireDate()!=null){
                 userEntity.setSellExpireDate(userEntity.getSellExpireDate().plusMonths(1));
             }
             else{
                 userEntity.setSellExpireDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).plusMonths(1));
             }
-            response.sendRedirect(uri+"/seller");
+            userService.saveInfo(userEntity);
+            response.sendRedirect(REDIRECT_HOST);
         }
         return ResponseEntity.badRequest().body(new ErrorResponse("Payment error", HttpStatus.BAD_REQUEST.value()));
 
