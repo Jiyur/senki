@@ -162,9 +162,9 @@ public class PaypalService {
     public String paypalPaymentSellLicense(String userId,HttpServletRequest request,Double total){
         try{
             Payment payment=createPayment(total,"USD","paypal","sale",
-                    HOST+CANCEL_URL_LICENSE+"?userId="+userId+"&redirectURI="
+                    HOST+CANCEL_URL_LICENSE+userId+"&redirectURI="
                             +request.getHeader("origin"),
-                    HOST+SUCCESS_URL_LICENSE+"?userId="+userId+"&redirectURI="
+                    HOST+SUCCESS_URL_LICENSE+userId+"&redirectURI="
                             +request.getHeader("origin"));
             for(Links link:payment.getLinks()){
                 if(link.getRel().equals("approval_url")){
