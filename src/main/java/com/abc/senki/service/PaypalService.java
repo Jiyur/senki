@@ -143,22 +143,18 @@ public class PaypalService {
     }
     public String paypalPaymentV2(String payId,HttpServletRequest request,Double total){
         try{
-            String host=request.getHeader("origin");
-            URI uri=new URI(host);
+
             Payment payment = createPayment(total,"USD", "paypal", "sale",
                     HOST+CANCEL_URL_V2+payId,
                     HOST+SUCCESS_URL_V2+payId+"?redirectURI="
-                            +uri.getPath());
+                            +request.getHeader("origin"));
             for(Links link:payment.getLinks()){
                 if(link.getRel().equals("approval_url")){
                     return link.getHref();
                 }
             }
         } catch (PayPalRESTException e) {
-        e.printStackTrace();
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
+        e.printStackTrace();}
         return null;
     }
     public String paypalPaymentSellLicense(String userId,HttpServletRequest request,Double total) throws URISyntaxException {
