@@ -102,7 +102,6 @@ public class OrderControllerV2 {
     @Operation(summary = "Paypal payment success")
     public ResponseEntity<Object> successPay(@PathVariable("id") String id,
                                              @RequestParam(name = "paymentId") String paymentId,
-                                             @RequestParam(name = "redirectURI") String uri,
                                              @RequestParam(name = "PayerID") String payerId,
                                              HttpServletResponse response
                                             ){
