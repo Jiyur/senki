@@ -20,6 +20,11 @@ public class PaypalService {
 
     public static final String SUCCESS_URL_V2 = "/api/v2/order/pay/success/";
     public static final String CANCEL_URL_V2 = "/api/v2/order/pay/cancel/";
+
+    public static final String SUCCESS_URL_LICENSE="/api/seller-license/pay/success/";
+
+    public static final String CANCEL_URL_LICENSE="/api/seller-license/pay/cancel/";
+
     public static final String HOST="https://senki.me";
 //    public static final String HOST="http://localhost:8080";
 
@@ -100,6 +105,7 @@ public class PaypalService {
 
 
     }
+
     //Execute payment
     public Payment executePayment(String paymentId, String payerId) throws PayPalRESTException{
         Payment payment = new Payment();
@@ -151,6 +157,25 @@ public class PaypalService {
         } catch (URISyntaxException e) {
              throw new RuntimeException(e);
          }
+        return null;
+    }
+    public String paypalPaymentSellLicense(String userId,HttpServletRequest request,Double total){
+        try{
+            Payment payment=createPayment(total,"USD","paypal","sale",
+                    HOST+CANCEL_URL_LICENSE+"?userId="+userId+"&redirectURI="
+                            +request.getHeader("origin"),
+                    HOST+SUCCESS_URL_LICENSE+"?userId="+userId+"&redirectURI="
+                            +request.getHeader("origin"));
+            for(Links link:payment.getLinks()){
+                if(link.getRel().equals("approval_url")){
+                    return link.getHref();
+                }
+            }
+
+
+        } catch ( PayPalRESTException e) {
+            throw new RuntimeException(e);
+        }
         return null;
     }
 

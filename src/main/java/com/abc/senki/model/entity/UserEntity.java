@@ -71,6 +71,10 @@ public class UserEntity {
     @OneToMany(mappedBy = "seller",targetEntity = ProductEntity.class,fetch = FetchType.LAZY)
     private List<ProductEntity> productList;
 
+
+    private LocalDateTime sellExpireDate;
+
+
     private boolean status;
     private boolean active;
 
