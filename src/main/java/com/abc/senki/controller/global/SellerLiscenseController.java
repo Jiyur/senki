@@ -71,8 +71,8 @@ public class SellerLiscenseController {
     @GetMapping("/pay/success/{id}")
     @Operation(summary = "Paypal success")
     public ResponseEntity<Object> liscenseSuccess(@PathVariable("id") String userId,
-                                                  @RequestParam("paymentId") String paymentId,
-                                                  @RequestParam("PayerID") String payerId,
+                                                  @RequestParam(name = "paymentId") String paymentId,
+                                                  @RequestParam(name = "PayerID") String payerId,
                                                   HttpServletResponse response
                                                   ) throws PayPalRESTException, IOException {
         UserEntity userEntity=userService.findById(UUID.fromString(userId));

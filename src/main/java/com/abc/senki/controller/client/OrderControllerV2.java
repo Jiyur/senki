@@ -100,7 +100,7 @@ public class OrderControllerV2 {
     }
     @GetMapping("/pay/success/{id}")
     @Operation(summary = "Paypal payment success")
-    public ResponseEntity<Object> successPay(@PathVariable("id") String id,
+    public void     successPay(@PathVariable("id") String id,
                                              @RequestParam(name = "paymentId") String paymentId,
                                              @RequestParam(name = "PayerID") String payerId,
                                              HttpServletResponse response
@@ -111,12 +111,12 @@ public class OrderControllerV2 {
 
 
             if(payment.getState().equals("approved")){
+                System.out.println("yes");
                 orderService.updateAllOrderStatus(id,PROCESSING.getMessage());
                 //Process order if payment success
                 response.sendRedirect("http://localhost:3000/paypal/success");
 
             }
-            throw new BadRequestException("Payment failed");
 
 
         }
