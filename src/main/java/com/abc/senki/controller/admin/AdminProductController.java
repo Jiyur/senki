@@ -130,7 +130,7 @@ public class AdminProductController {
     public ResponseEntity<Object> enableProduct(@PathVariable("id") String id){
         productService.enableProduct(id);
         return ResponseEntity
-                .ok(new SuccessResponse(HttpStatus.OK.value(),"Disable product successfully", null));
+                .ok(new SuccessResponse(HttpStatus.OK.value(),"Enable product successfully", null));
 
     }
 }

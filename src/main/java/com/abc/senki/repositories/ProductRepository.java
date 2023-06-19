@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
@@ -36,9 +37,11 @@ public interface ProductRepository extends JpaRepository<ProductEntity, UUID>, J
 
     //Set product Status to false
     @Query(value = "UPDATE products SET status = false WHERE id = ?1", nativeQuery = true)
+    @Modifying
     void disableProduct(UUID productId);
     //Set product Status to true
     @Query(value = "UPDATE products SET status = true WHERE id = ?1", nativeQuery = true)
+    @Modifying
     void enableProduct(UUID productId);
 
     @Query(value = "SELECT * FROM products WHERE price BETWEEN ?2 AND ?3 AND seller_id=?1",nativeQuery = true)
