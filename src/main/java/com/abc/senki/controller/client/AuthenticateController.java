@@ -212,6 +212,35 @@ public class AuthenticateController {
                     .body(ErrorResponse.error(ERROR_TRY_AGAIN.getMessage(), HttpStatus.BAD_REQUEST.value()));
         }
     }
+    @GetMapping("/{id}")
+    @Operation(summary = "User Info")
+    public ResponseEntity<Object> getUserById(
+            @PathVariable("id") UUID id, HttpServletResponse resp) {
+        try {
+            UserEntity user = userService.findById(id);
+            if (user == null|| !user.isActive()) {
+                throw new RecordNotFoundException("Not found, please register again");
+            }
+            AppUserDetail userDetails = AppUserDetail.build(user);
+            String accessToken = generateActiveToken(userDetails);
+            String refreshToken = generateRefreshToken(userDetails);
+
+            HashMap<String, Object> data = new HashMap<>();
+            data.put(ACCESS_TOKEN, accessToken);
+            data.put(REFRESH_TOKEN, refreshToken);
+            data.put("user", user);
+
+            resp.setHeader("Set-Cookie", "test=value; Path=/");
+            resp.addCookie(new Cookie(ACCESS_TOKEN, accessToken));
+            resp.addCookie(new Cookie("refreshToken", refreshToken));
+
+            return ResponseEntity.ok(new SuccessResponse(HttpStatus.OK.value(), "Login success", data));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(ErrorResponse.error(ERROR_TRY_AGAIN.getMessage(), HttpStatus.BAD_REQUEST.value()));
+        }
+    }
+
     @PostMapping("/resetPassword")
     @Operation(summary = "Reset password")
     public ResponseEntity<Object> resetPassword(@RequestBody @Valid ResetPasswordRequest request) {
