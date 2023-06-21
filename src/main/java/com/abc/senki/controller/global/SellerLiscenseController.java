@@ -6,6 +6,8 @@ import com.abc.senki.model.entity.UserEntity;
 import com.abc.senki.model.payload.response.ErrorResponse;
 import com.abc.senki.model.payload.response.SuccessResponse;
 import com.abc.senki.repositories.RoleRepository;
+import com.abc.senki.security.dto.AppUserDetail;
+import com.abc.senki.security.jwt.JwtUtils;
 import com.abc.senki.service.PaypalService;
 import com.abc.senki.service.UserService;
 import com.abc.senki.util.DataUtil;
@@ -17,6 +19,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -41,10 +47,17 @@ public class SellerLiscenseController {
 
     @Autowired
     private AuthenticationHandler authenticationHandler;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
     @Autowired
     private PaypalService paypalService;
 
-    private final static String REDIRECT_HOST="http://localhost:3000/seller/payment/success/";
+    @Autowired
+    private JwtUtils jwtUtils;
+
+    private final static String REDIRECT_HOST="http://localhost:3000/paypal/success/";
 
     @GetMapping("")
     @Operation(summary = "Create seller license")
@@ -100,7 +113,15 @@ public class SellerLiscenseController {
                 userEntity.setSellExpireDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).plusMonths(1));
             }
             userService.saveInfo(userEntity);
-            response.sendRedirect(REDIRECT_HOST);
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(userEntity.getId().toString(),userEntity.getPassword())
+            );
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            AppUserDetail userDetail = (AppUserDetail) authentication.getPrincipal();
+            //Set token
+            String accessToken = "accessToken="+generateActiveToken(userDetail);
+            String refreshToken = "refreshToken="+generateRefreshToken(userDetail);
+            response.sendRedirect(REDIRECT_HOST+"?"+accessToken+"&"+refreshToken);
         }
         return ResponseEntity.badRequest().body(new ErrorResponse("Payment error", HttpStatus.BAD_REQUEST.value()));
 
@@ -116,6 +137,14 @@ public class SellerLiscenseController {
             }
         }
         return flag;
+    }
+
+    public String generateActiveToken(AppUserDetail userDetail) {
+        return jwtUtils.generateJwtToken(userDetail);
+    }
+
+    public String generateRefreshToken(AppUserDetail userDetail) {
+        return jwtUtils.generateRefreshJwtToken(userDetail);
     }
 
 }
