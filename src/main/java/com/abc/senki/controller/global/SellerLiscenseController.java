@@ -77,7 +77,7 @@ public class SellerLiscenseController {
     }
     @GetMapping("/pay/success/{id}")
     @Operation(summary = "Paypal success")
-    public ResponseEntity<Object> liscenseSuccess(@PathVariable("id") String userId,
+    public ResponseEntity<Object> licenseSuccess(@PathVariable("id") String userId,
                                                   @RequestParam(name = "paymentId") String paymentId,
                                                   @RequestParam(name = "PayerID") String payerId,
                                                   HttpServletResponse response
