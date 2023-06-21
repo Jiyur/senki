@@ -108,7 +108,7 @@ public class SellerLiscenseController {
             }
             userService.saveInfo(userEntity);
 
-            response.sendRedirect(REDIRECT_HOST+"?"+userEntity.getId());
+            response.sendRedirect(REDIRECT_HOST+"?userId="+userEntity.getId());
         }
         return ResponseEntity.badRequest().body(new ErrorResponse("Payment error", HttpStatus.BAD_REQUEST.value()));
 
