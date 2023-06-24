@@ -66,6 +66,9 @@ public class ShipperOrderController {
         }
         try{
             OrderEntity order=orderService.getOrderById(orderId);
+            if(order.getShipper()!=null){
+                return ResponseEntity.badRequest().body(new ErrorResponse("Order is picked by another shipper", HttpStatus.BAD_REQUEST.value()));
+            }
             order.setShipper(shipper);
             order.setStatus(SHIPPING.getMessage());
             orderService.saveOrder(order);
