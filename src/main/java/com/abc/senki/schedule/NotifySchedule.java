@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 public class NotifySchedule {
     @Autowired
     private NotifyService notifyService;
-//     @Scheduled(fixedRate = 20000)
+//     @Scheduled(fixedRate = 30000)
      public void scheduleFixedRateTask() {
          notifyService.pushChargeNotify();
 

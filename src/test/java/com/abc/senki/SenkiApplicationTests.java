@@ -1,9 +1,11 @@
 package com.abc.senki;
 
 import com.abc.senki.model.entity.ProductEntity;
+import com.abc.senki.model.entity.UserEntity;
 import com.abc.senki.model.payload.RevenueDTO;
 import com.abc.senki.repositories.ProductRepository;
 import com.abc.senki.repositories.StaticRepository;
+import com.abc.senki.repositories.UserRepository;
 import com.abc.senki.repositories.spec.ProductSpecification;
 import com.abc.senki.repositories.spec.SearchCriteria;
 import com.abc.senki.service.NotifyService;
@@ -35,6 +37,8 @@ class SenkiApplicationTests {
     ProductRepository productRepository;
     @Autowired
     StaticRepository staticRepository;
+    @Autowired
+        UserRepository userRepository;
 
     @Autowired
     NotifyService notifyService;
@@ -61,6 +65,14 @@ class SenkiApplicationTests {
 
 
 
+    }
+    @Test
+    void testB(){
+        List<UserEntity> sellerEndLicense=userRepository.getAllSellerNearEndLicense();
+        for (UserEntity item:sellerEndLicense
+             ) {
+            System.out.println(item.getEmail());
+        }
     }
     @Test
     void getA()  {

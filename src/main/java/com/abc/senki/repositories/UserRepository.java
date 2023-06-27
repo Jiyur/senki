@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -24,6 +25,10 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
     @Query(value = "select * from users where nick_name LIKE ?1 AND user_id IN (SELECT user_id FROM user_role where role_id='3') "
             , nativeQuery = true)
     Optional<UserEntity> getUserByNickname(String nickname);
+
+    @Query(value = "select * from users u where u.sell_expire_date <= current_timestamp + interval '6 day'"
+            , nativeQuery = true)
+    List<UserEntity> getAllSellerNearEndLicense();
 
 
     @Modifying
