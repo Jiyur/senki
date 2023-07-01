@@ -291,7 +291,7 @@ public class AuthenticateController {
                 throw new HttpMessageNotReadableException("Email is not Registered");
             }
             UserEntity user = userService.findByEmail(request.getEmail());
-            emailService.sendGridEmail(req.getHeader("Origin"),user);
+            emailService.sendForgetPasswordMessage(req.getHeader("Origin"),user);
             HashMap<String, Object> data = new HashMap<>();
             data.put("email", user.getEmail());
             return ResponseEntity.ok(new SuccessResponse(HttpStatus.OK.value(), "Email sent successfully", data));
