@@ -127,8 +127,8 @@ public class PaypalService {
 
             Payment payment = createPayment(order, "USD", "paypal", "sale",
                     HOST+CANCEL_URL+orderId,
-                    HOST+SUCCESS_URL+orderId+"?redirectURI="
-                            +request.getHeader("origin"));
+                    HOST+SUCCESS_URL+orderId
+                            );
             for(Links link:payment.getLinks()){
                 if(link.getRel().equals("approval_url")){
                     return link.getHref();
