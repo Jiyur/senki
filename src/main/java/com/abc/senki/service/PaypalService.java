@@ -27,7 +27,6 @@ public class PaypalService {
 
     public static final String HOST="https://senki.me";
 //    public static final String HOST="http://localhost:8080";
-
     public static final String DIRECT_URL="http://localhost:3000";
 
     @Autowired
