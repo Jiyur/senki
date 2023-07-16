@@ -10,6 +10,7 @@ public class NotifySchedule {
     @Autowired
     private NotifyService notifyService;
 //     @Scheduled(fixedRate = 30000)
+     @Scheduled(fixedRate = 86400000)
      public void scheduleFixedRateTask() {
          notifyService.pushChargeNotify();
 
