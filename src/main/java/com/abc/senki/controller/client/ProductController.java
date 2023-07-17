@@ -2,10 +2,12 @@ package com.abc.senki.controller.client;
 
 import com.abc.senki.common.SortingEnum;
 import com.abc.senki.model.entity.ProductEntity;
+import com.abc.senki.model.payload.RevenueDTO;
 import com.abc.senki.model.payload.response.ErrorResponse;
 import com.abc.senki.model.payload.response.SuccessResponse;
 import com.abc.senki.service.CategoryService;
 import com.abc.senki.service.ProductService;
+import com.abc.senki.service.StaticService;
 import com.abc.senki.util.PageUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -41,6 +43,9 @@ public class ProductController  {
 
     @Autowired
     CategoryService categoryService;
+
+    @Autowired
+    private StaticService staticService;
     @GetMapping("")
     @Operation(summary = "Get all product")
     public ResponseEntity<Object> getAllProduct(@RequestParam(defaultValue = "0") int page,
@@ -129,8 +134,10 @@ public class ProductController  {
                         .body(ErrorResponse.error(PRODUCT_NOT_FOUND.getMessage(), HttpStatus.BAD_REQUEST.value()));
             }
             else{
+                List<RevenueDTO> revenueDTO=staticService.getStaticByYear(product.getSeller(),"2023");
                 Map<String, Object> data=new HashMap<>();
                 data.put("product",product);
+                data.put("static",revenueDTO);
                 return ResponseEntity.ok(new SuccessResponse(HttpStatus.OK.value(),"Get product by id successfully",data));
             }
         }
