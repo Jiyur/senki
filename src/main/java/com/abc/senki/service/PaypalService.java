@@ -12,6 +12,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import com.abc.senki.util.CurrencyUtil;
 
 @Service
 public class PaypalService {
@@ -42,7 +43,7 @@ public class PaypalService {
         //Set amount
         Amount amount=new Amount();
         amount.setCurrency(currency);
-        amount.setTotal(String.format("%.2f", order.getTotal()));
+        amount.setTotal(String.format("%.2f", CurrencyUtil.convertVNDToUsd(order.getTotal())));
         //Init transaction
         Transaction transaction=new Transaction();
         transaction.setAmount(amount);
@@ -79,7 +80,7 @@ public class PaypalService {
         //Set amount
         Amount amount=new Amount();
         amount.setCurrency(currency);
-        amount.setTotal(String.format("%.2f", total));
+        amount.setTotal(String.format("%.2f", CurrencyUtil.convertVNDToUsd(total)));
         //Init transaction
         Transaction transaction=new Transaction();
         transaction.setAmount(amount);
