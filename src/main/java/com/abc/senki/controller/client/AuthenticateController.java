@@ -157,8 +157,11 @@ public class AuthenticateController {
         }
         UserEntity loginUser = userService.findByEmail(user.getEmail());
 
-        if (!encoder.matches(user.getPassword(), loginUser.getPassword())|| loginUser.isActive()==false) {
+        if (!encoder.matches(user.getPassword(), loginUser.getPassword())) {
             return ResponseEntity.badRequest().body(ErrorResponse.error("Wrong password", HttpStatus.BAD_REQUEST.value()));
+        }
+        if(!loginUser.isActive()){
+            return ResponseEntity.badRequest().body(ErrorResponse.error("Your account is  suspended", HttpStatus.BAD_REQUEST.value()));
         }
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginUser.getId().toString(), user.getPassword())
@@ -190,8 +193,11 @@ public class AuthenticateController {
             }
             String email = jwtUtils.getUserNameFromJwtToken(token);
             UserEntity user = userService.findByEmail(email);
-            if (user == null||user.isActive()==false) {
+            if (user == null) {
                 throw new RecordNotFoundException("Not found, please register again");
+            }
+            if(!user.isActive()){
+                return ResponseEntity.badRequest().body(ErrorResponse.error("Your account is  suspended", HttpStatus.BAD_REQUEST.value()));
             }
             AppUserDetail userDetails = AppUserDetail.build(user);
             String accessToken = generateActiveToken(userDetails);
